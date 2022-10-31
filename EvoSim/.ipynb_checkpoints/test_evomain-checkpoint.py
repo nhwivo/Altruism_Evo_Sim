@@ -18,7 +18,8 @@ args = parser.parse_args()
 
 # PARAMETERS FOR THE SIMULATION: 
 sim_mode = 1
-run_num = 1
+run_num = 2
+out_fname = "_population_data.csv"
 
 # PROCESSING OPTIONAL ARGUMENTS 
 
@@ -26,7 +27,10 @@ run_num = 1
 if __name__ == '__main__':
     My_Sim = Simulation(args.startPop, args.totalDays, run_num)  # Initialize Simulation 
     My_Sim.run_sim(sim_mode)  # run the simulation 
-    My_Sim.save_data()
+    My_Sim.save_data(out_fname)
+    
+    
+    
     
     print("All data below are collected at the end of the simulation.") 
     print("")

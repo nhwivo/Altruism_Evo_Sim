@@ -3,6 +3,7 @@
 ############################################################
 
 import copy
+import os
 from Population import *
 from settings import *
 
@@ -97,8 +98,70 @@ class Simulation():
     
     ####################################################################################################
     # SIMULATION COMPLETE - SAVE DATA INTO A FILE 
-    def save_data(self):
-        pass
+    def save_data(self, out_fname):
+        out_fname_ind = "ind" + out_fname  # output file name for individual population data 
+        out_fname_fs = "fsource" + out_fname# output file name for food source population data 
+        out_flist = [out_fname_ind, out_fname_fs]  # list of output files to be created
+        
+        os.system("mkdir -p sim_output")  # create direcory for output file if none exists.
+        
+        for fname in out_flist:
+            if "ind" in fname:
+                self.pop_to_save = self.og_individual_pop
+            if "fsource" in fname:
+                self.pop_to_save = self.og_food_pop
+                
+            self.write_header(fname)  # create headers/columns for the output files 
+            self.write_day0(fname)  # add data of the initial population
+            # self.write_pop_data(fname)  # add population data to output files created above: 
+    
+    def write_header(self, fname):
+        """
+        Write the header/columns of the file.
+        
+        Parameters: 
+            fname (str): name of the output files. 
+        """
+        # creating column names for number of repeats/runs in the simulation 
+        run_headers = ""
+        for r_num in range(self.total_runs):  
+            col_name = "Run" + str(r_num+1) + "Popnum, "
+            run_headers += col_name
+            
+        command = "echo Day, " + run_headers + "AvgPopnum > sim_output/" + fname
+        os.system(command)  # run the command to create file and add column names
+        
+    def write_day0(self, fname):
+        """
+        Write data from the initial population (day 0) before the simulation began.
+        
+        Parameters: 
+            fname (str): name of the output files. 
+        """
+        start_pop = len(self.pop_to_save.pop_mem_list)
+        row_str = "0, "
+        for _ in range(self.total_runs):  
+            num_to_add = str(start_pop) + ", "
+            row_str += num_to_add
+        
+        command = "echo " +  row_str + str(start_pop) + " >> sim_output/" + fname
+        os.system(command)
+    
+    def write_pop_data(self, fname):
+        for day_num in range(self.total_days):
+            data_string = str(day_num+1)  # add day number to row
+            day_avg = 0
+            for run in range(self.total_runs):
+                run_data = self.pop_to_save.popnum_all_runs[run][day_num] # data for day_num of the run 
+                day_avg += run_data
+                data_string += str(run_data) + ", "
+            
+            day_avg = day_avg/self.total_runs
+                
+            command = "echo " + data_string + day_avg + " >> sim_output/" + fname
+            os.system(command)
+            
+    
     ####################################################################################################
 
     
