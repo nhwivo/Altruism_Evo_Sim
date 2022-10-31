@@ -53,6 +53,7 @@ class Population():
     def record_run_popnum(self):
         # record list of popnum for all days simulated
         self.popnum_all_runs.append(self.popnum_all_days)
+        
         # clear list to record popnum for next run
         self.popnum_all_days = []
     

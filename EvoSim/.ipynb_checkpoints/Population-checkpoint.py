@@ -53,6 +53,7 @@ class Population():
     def record_run_popnum(self):
         # record list of popnum for all days simulated
         self.popnum_all_runs.append(self.popnum_all_days)
+        
         # clear list to record popnum for next run
         self.popnum_all_days = []
     
@@ -151,6 +152,10 @@ class FoodPopulation(Population):
             food.food_unit = food.og_food_unit  # reset the food unit 
     
     def edit_food_source_pop(self):
+        """
+        Change the population number of the food source depending on the population of individuals. 
+        More individual = add food source; less individual = remove food source 
+        """
         food_unit_avail = len(self.pop_mem_list)*FOOD_UNIT  # number of food unit currently 
         # create number of food sources needed for current ind population num plus 2 sources extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind

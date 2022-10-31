@@ -18,7 +18,7 @@ args = parser.parse_args()
 
 # PARAMETERS FOR THE SIMULATION: 
 sim_mode = 1
-run_num = 2
+run_num = 3
 out_fname = "_population_data.csv"
 
 # PROCESSING OPTIONAL ARGUMENTS 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     
     
     
-    print("All data below are collected at the end of the simulation.") 
+    print("All data below are from the end of the simulation.") 
     print("")
     print("Number of individuals: " + str(len(My_Sim.individual_pop.pop_mem_list)))
     # print("List of individuals: " + str(My_Sim.individual_pop.pop_mem_list))

@@ -49,19 +49,15 @@ class Simulation():
             self.food_pop = copy.deepcopy(self.og_food_pop)  # create a duplicate population object
             self.individual_pop = copy.deepcopy(self.og_individual_pop)  # create a duplicate population object
             # run the simulation
-            self.run_run()  # simulate specified number of runs/repeats 
+            self.run_run()  # simulate a single run
+            self.record_run_data()  # record data for the run/repeat
             
         self.record_sim_data()  # record data of the whole simulation (all runs all days)
     
     def run_run(self):
         for _ in range(self.total_days):
-            self.run_day()  # simulate the specified number of days 
+            self.run_day()  # simulate a single day
         
-        self.record_run_data()  # record data for the run/repeat
-    
-    
-    
-    
     def run_day(self): 
         self.reset_day()  # reset the day (ex: reset food availability) 
         self.populations_action()  # all populations perform action 
@@ -82,13 +78,17 @@ class Simulation():
     def record_day_data(self):
         """Record data after simulating 1 day."""
         self.individual_pop.record_day_popnum()  # record population number of individuals 
+        self.og_individual_pop.popnum_all_days = self.individual_pop.popnum_all_days  # copy data
+        
         self.food_pop.record_day_popnum()  # record population number of food sources 
+        self.og_food_pop.popnum_all_days = self.food_pop.popnum_all_days  # copy data
+        
     
     def record_run_data(self):
         """Record data of all days ran in 1 simulation repeat."""
         # record popnum of all days in the run 
-        self.individual_pop.record_run_popnum()  
-        self.food_pop.record_run_popnum()  
+        self.og_food_pop.record_run_popnum()  
+        self.og_individual_pop.record_run_popnum()  
     
     def record_sim_data(self):
         pass
@@ -113,7 +113,7 @@ class Simulation():
                 
             self.write_header(fname)  # create headers/columns for the output files 
             self.write_day0(fname)  # add data of the initial population
-            # self.write_pop_data(fname)  # add population data to output files created above: 
+            self.write_pop_data(fname)  # add population data to output files created above: 
     
     def write_header(self, fname):
         """
@@ -149,16 +149,15 @@ class Simulation():
     
     def write_pop_data(self, fname):
         for day_num in range(self.total_days):
-            data_string = str(day_num+1)  # add day number to row
+            data_string = str(day_num+1) + ", "  # add day number to row
             day_avg = 0
             for run in range(self.total_runs):
                 run_data = self.pop_to_save.popnum_all_runs[run][day_num] # data for day_num of the run 
                 day_avg += run_data
                 data_string += str(run_data) + ", "
             
-            day_avg = day_avg/self.total_runs
-                
-            command = "echo " + data_string + day_avg + " >> sim_output/" + fname
+            day_avg = day_avg/self.total_runs  # calculate average for each day 
+            command = "echo " + data_string + str(day_avg) + " >> sim_output/" + fname
             os.system(command)
             
     
