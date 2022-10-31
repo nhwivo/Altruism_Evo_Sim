@@ -2,7 +2,7 @@
 INNIT_AGE_RANGE = [10,40]  # age range of individuals in the starting population (range used to randomize age)
 MAX_AGE = 55  # age at which individual is removed from population 
 FERTILE_AGE_RANGE = [20,40]  #age range at which individuals can reproduce
-REPRODUCE_RECOVER = 15  # number of days before individual can reproduce again 
+REPRODUCE_RECOVER = 5  # number of days before individual can reproduce again 
 
 
 # Food Source Settings: 
