@@ -41,8 +41,7 @@ class Population():
         """
         Make all individuals in the population perform specified actions. 
         """
-        for member in self.pop_mem_list:
-            member.perform_daily_action(self)
+        pass 
     
     
     
@@ -94,21 +93,34 @@ class IndividualPopulation(Population):
         self.initialize_population()  # create starting population of individuals 
         
     def initialize_population(self):
+        """Create starting population of a specified number of individuals with random ages."""
         for _ in range(self.starting_popnum):
             start, end = INNIT_AGE_RANGE[0], INNIT_AGE_RANGE[1]
             age = random.randint(start, end)
             self.individual = Individual(age)
             self.pop_mem_list.append(self.individual)
+            
+    def ind_population_actions(self):
+        """Make every members in the population perform specified actions."""
+        for member in self.pop_mem_list:
+            member.perform_daily_action(self)
     
     
 # child class of Population class             
 class FoodPopulation(Population):
     def __init__(self, starting_popnum):
-        super().__init__(starting_popnum)
+        """
+        Initializes the population of individuals in the simulation. 
+        
+        Parameters:
+            starting_popnum (int): number of individuals in the starting population.
+        """
+        super().__init__(starting_popnum)  # obtain attributes from parent class 
         
         self.initialize_population()  # create starting population of food source 
         
     def initialize_population(self):
+        """Create starting population of a specified number of individuals with random ages."""
         for _ in range(self.starting_popnum):
             self.individual = FoodSource()
             self.pop_mem_list.append(self.individual)
@@ -117,7 +129,21 @@ class FoodPopulation(Population):
     
     
     
+    def fs_population_actions(self):
+        """Make every members in the population perform specified actions."""
+        for member in self.pop_mem_list:
+            member.perform_daily_action(self)
+    
+    
+    
     def reset_food_day(self, ind_popnum):
+        """
+        Reset certain attributes of the food source population, such as adjusting number of food source, 
+        re-setting the food_unit attribute, and re-assigning predators. 
+        
+        Parameters:
+            ind_popnum (int): population number of individuals that consume food. 
+        """
         self.ind_popnum = ind_popnum  # number of IND that needs food 
         self.edit_food_source_pop()  # make sure there is enough food for the IND population 
         self.assign_predators()  # re-assign predators - in case number of food sources increased. 
@@ -125,6 +151,10 @@ class FoodPopulation(Population):
             food.food_unit = food.og_food_unit  # reset the food unit 
     
     def edit_food_source_pop(self):
+        """
+        Change the population number of the food source depending on the population of individuals. 
+        More individual = add food source; less individual = remove food source 
+        """
         food_unit_avail = len(self.pop_mem_list)*FOOD_UNIT  # number of food unit currently 
         # create number of food sources needed for current ind population num plus 2 sources extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind

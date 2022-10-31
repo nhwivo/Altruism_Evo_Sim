@@ -72,8 +72,8 @@ class Simulation():
         self.food_pop.reset_food_day(ind_popnum)  # reset the food source population 
     
     def populations_action(self):
-        self.individual_pop.execute_population_actions()  # individuals perform action
-        self.food_pop.execute_population_actions()  # food sources perform action
+        self.individual_pop.ind_population_actions()  # individuals perform action
+        self.food_pop.fs_population_actions()  # food sources perform action
     
     
     
