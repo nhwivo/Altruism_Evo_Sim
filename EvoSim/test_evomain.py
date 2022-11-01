@@ -5,6 +5,7 @@
 import argparse
 import os
 from Simulation import *
+from settings import * 
 
 # COMMAND LINE ARGUMENTS:
 parser = argparse.ArgumentParser()
@@ -16,18 +17,17 @@ parser.add_argument("-a","--aa", help="")
 parser.add_argument("-b","--bb", help="") 
 args = parser.parse_args()
 
-# PARAMETERS FOR THE SIMULATION: 
-sim_mode = 1
-run_num = 3
-out_fname = "_population_data.csv"
-
-# PROCESSING OPTIONAL ARGUMENTS 
+# OBTAIN PARAMETERS FOR THE SIMULATION: 
+RUN_NUM = config['RUN_NUM']
+SIM_MODE = config['SIM_MODE']
+OUT_FNAME = config['OUT_FNAME']
 
 # RUNNING THE SIMULATION 
 if __name__ == '__main__':
-    My_Sim = Simulation(args.startPop, args.totalDays, run_num)  # Initialize Simulation 
-    My_Sim.run_sim(sim_mode)  # run the simulation 
-    My_Sim.save_data(out_fname)
+    My_Sim = Simulation(args.startPop, args.totalDays, RUN_NUM)  # Initialize Simulation 
+    My_Sim.run_sim(SIM_MODE)  # run the simulation 
+    My_Sim.save_data(OUT_FNAME)
+    
     
     
     

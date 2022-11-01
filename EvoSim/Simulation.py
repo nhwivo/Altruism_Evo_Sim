@@ -1,6 +1,6 @@
-############################################################
+########################################################################################################
 # DESCRIPTION
-############################################################
+########################################################################################################
 
 import copy
 import os
@@ -31,6 +31,7 @@ class Simulation():
         
     def calculate_foodstartnum(self):
         """Calculate the number of starting food sources needed."""
+        INF_FOOD = config['INF_FOOD']  # obtain value from config file 
         if INF_FOOD:  # if simulation has inifite food
             # create number of food sources needed for population num specified plus 3 sources extra
             fs_num = int((self.start_pop/4)+3)   
@@ -69,7 +70,7 @@ class Simulation():
         self.food_pop.reset_food_day(ind_popnum)  # reset the food source population 
     
     def populations_action(self):
-        self.individual_pop.ind_population_actions()  # individuals perform action
+        self.individual_pop.ind_population_actions(self.food_pop)  # individuals perform action
         self.food_pop.fs_population_actions()  # food sources perform action
     
     

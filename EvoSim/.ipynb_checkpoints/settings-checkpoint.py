@@ -10,3 +10,8 @@ FOOD_UNIT = 4  # number of food unit per Food Source (1 unit = 1 individual)
 INF_FOOD = True  # T: simulation has inifite food sources for individuals; F: finite food
 FOOD_SOURCE_AVAIL = 100  # number of food source, each producing FOOD_UNIT amount 
 PREDATOR_RISK = 0.03  # probability of a predator in the food source; ex: 0.02 = 1 in 50
+
+import yaml
+
+with open("../config/config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)

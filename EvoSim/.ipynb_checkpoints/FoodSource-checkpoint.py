@@ -6,7 +6,7 @@ from settings import *
 
 class FoodSource(): 
     def __init__(self):
-        self.og_food_unit = FOOD_UNIT  # base food unit that members reset to at end of day 
+        self.og_food_unit = config['FOOD_UNIT']  # base food unit that members reset to at end of day 
         self.food_unit = self.og_food_unit  # food unit that changes as the day progresses 
         self.predator_presence = False
         

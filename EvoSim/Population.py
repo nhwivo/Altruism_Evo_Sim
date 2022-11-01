@@ -101,10 +101,10 @@ class IndividualPopulation(Population):
             self.individual = Individual(age)
             self.pop_mem_list.append(self.individual)
             
-    def ind_population_actions(self):
+    def ind_population_actions(self, food):
         """Make every members in the population perform specified actions."""
         for member in self.pop_mem_list:
-            member.perform_daily_action(self)
+            member.perform_daily_action(self, food)
     
     
 # child class of Population class             
@@ -117,6 +117,7 @@ class FoodPopulation(Population):
             starting_popnum (int): number of individuals in the starting population.
         """
         super().__init__(starting_popnum)  # obtain attributes from parent class 
+        self.no_food_unit_list = []  # list of FoodSource objects without food unit (food unit = 0)
         
         self.initialize_population()  # create starting population of food source 
         
@@ -150,6 +151,8 @@ class FoodPopulation(Population):
         self.assign_predators()  # re-assign predators - in case number of food sources increased. 
         for food in self.pop_mem_list:
             food.food_unit = food.og_food_unit  # reset the food unit 
+            
+        self.no_food_unit_list = []  # clear list of FoodSource objects without food unit 
     
     def edit_food_source_pop(self):
         """
@@ -160,7 +163,7 @@ class FoodPopulation(Population):
         # create number of food sources needed for current ind population num plus 2 sources extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind
             needed_food_unit = self.ind_popnum - food_unit_avail  # number of food unit needed 
-            food_source_to_add = int(needed_food_unit/FOOD_UNIT)+1  # number of food source to add 
+            food_source_to_add = int(needed_food_unit/FOOD_UNIT)+2  # number of food source to add 
             for _ in range(food_source_to_add):
                 self.pop_mem_list.append(FoodSource()) 
                 
