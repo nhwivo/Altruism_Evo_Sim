@@ -1,6 +1,6 @@
-############################################################
+######################################################################################################
 # DESCRIPTION
-############################################################
+######################################################################################################
 import random
 from Individual import *
 from FoodSource import *
@@ -204,6 +204,30 @@ class FoodPopulation(Population):
             
     
     
+
+######################################################################################################   
 # TESTING 
+class FoodPopTest:
+    def __init__(self):
+        pass
+    
+    def test_pop_init(self):
+        pass
+    
+class IndPopTest:
+    def __init__(self):
+        pass
+    
+    def test_pop_init(self):
+        pass
+    
+
+
 if __name__ == '__main__':
-    pass
+    # test FoodPopulation child class
+    fpop_test = FoodPopTest()
+    fpop_test.test_pop_init()
+    
+    # test IndividualPopulation child class
+    ipop_test = IndPopTest()
+    ipop_test.test_pop_init()

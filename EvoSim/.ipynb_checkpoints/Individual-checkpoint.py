@@ -1,8 +1,9 @@
-############################################################
+######################################################################################################
 # DESCRIPTION
-############################################################
+######################################################################################################
 import random
 from settings import *
+from Population import *
 
 
 class Individual(): 
@@ -88,8 +89,31 @@ class Individual():
         self.age += 1 
         if self.age > self.max_age:
             self.status = 0  # individual dies at max age 
+
+
+
             
-            
+######################################################################################################       
 # TESTING 
+class IndTest:
+    def __init__(self):
+        self.ind = Individual(10)  # create individual age 10
+    
+    def test_ind_init(self):
+        """Test the __init__ function of Individual class."""
+        ind = self.ind
+        ind_char = [ind.age, ind.gender, ind.status, ind.max_age, ind.days_since_repro]
+        print("Output: " +str(ind_char))
+        print("Should be: [10, <random int from 0:1>, 1, " + str(config['MAX_AGE']) + ", 0]")
+    
+    def test_daily_action(self):
+        """Test perform_daily_action() method of Individual class."""
+        ind_pop = IndividualPopulation(5)  # create individual population of 5 individuals 
+        food_pop = FoodPopulation(5)  # create food population of 5 food sources
+        pass
+    
+            
 if __name__ == '__main__':
-    pass
+    ind_test = IndTest()
+    ind_test.test_ind_init()
+    ind_test.test_daily_action()
