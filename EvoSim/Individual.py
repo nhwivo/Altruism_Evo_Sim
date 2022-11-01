@@ -88,3 +88,8 @@ class Individual():
         self.age += 1 
         if self.age > self.max_age:
             self.status = 0  # individual dies at max age 
+            
+            
+# TESTING 
+if __name__ == '__main__':
+    pass

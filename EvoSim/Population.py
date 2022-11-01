@@ -96,7 +96,8 @@ class IndividualPopulation(Population):
     def initialize_population(self):
         """Create starting population of a specified number of individuals with random ages."""
         for _ in range(self.starting_popnum):
-            start, end = INNIT_AGE_RANGE[0], INNIT_AGE_RANGE[1]
+            start = config['INNIT_AGE_RANGE'][0]
+            end = config['INNIT_AGE_RANGE'][1]
             age = random.randint(start, end)
             self.individual = Individual(age)
             self.pop_mem_list.append(self.individual)
@@ -159,6 +160,7 @@ class FoodPopulation(Population):
         Change the population number of the food source depending on the population of individuals. 
         More individual = add food source; less individual = remove food source 
         """
+        FOOD_UNIT = config['FOOD_UNIT']
         food_unit_avail = len(self.pop_mem_list)*FOOD_UNIT  # number of food unit currently 
         # create number of food sources needed for current ind population num plus 2 sources extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind
@@ -177,6 +179,7 @@ class FoodPopulation(Population):
     def assign_predators(self):
         """Determine which food source has predators in them based on probability given by PREDATOR_RISK"""
         self.reset_predators()  # remove predators from all fsources 
+        PREDATOR_RISK = config['PREDATOR_RISK']
         number_of_members = len(self.pop_mem_list)  # number of members in the food source population 
         number_of_predators = int(number_of_members/(1/PREDATOR_RISK))  # calculate number of predators to assign 
         if number_of_predators == 0:
@@ -201,3 +204,6 @@ class FoodPopulation(Population):
             
     
     
+# TESTING 
+if __name__ == '__main__':
+    pass

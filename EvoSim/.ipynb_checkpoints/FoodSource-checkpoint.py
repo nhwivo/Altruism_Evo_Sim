@@ -25,3 +25,7 @@ class FoodSource():
     def reset_food_unit(self):
         pass
     
+    
+# TESTING 
+if __name__ == '__main__':
+    pass

@@ -178,3 +178,8 @@ class SimulationMode2(Simulation):
 class SimulationMode3(Simulation):
     def __init__(self):
         pass
+    
+
+# TESTING 
+if __name__ == '__main__':
+    pass
