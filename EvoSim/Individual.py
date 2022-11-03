@@ -7,18 +7,40 @@ from Population import *
 
 
 class Individual(): 
-    def __init__(self, age):
+    def __init__(self, age, start, parent_gene=None):
         """
         Initializes the Individual object. 
         
         Parameters: 
             age (int): age of the individual.
+            start (boolean): T if individual is from the starting population - genetic makeup
+                would be randomized; compared to F if the individual is an offspring - genes
+                would be inherited from parents.
         """
         self.age = age
         self.gender = random.randint(0,1)  # random gender - male=0, female=1
         self.status = 1  # life status - alive=1, dead=0
         self.max_age = config['MAX_AGE']  # maximum age of the individual 
         self.days_since_repro = 0  # days since individual last reproduced 
+        self.parent_genes = parent_gene
+        
+        if start:  # individual is from starting population:
+            self.randomize_starting_genes()
+            
+        if not start:  # individual not from starting population - is offspring:
+            self.inherit_genes()
+        
+    def randomize_starting_genes(self):
+        self.allotted_gene_num = config['ALLOTTED_GENE_NUM']  # number of genes ind can have
+        self.genetic_makeup = None  
+        
+    def inherit_genes(self):
+        self.mutate_parent_genes()  # introduce random mutation into genome
+        self.genetic_makeup = self.parent_genes
+    
+    def mutate_parent_genes(self):
+        pass
+        
         
     def perform_daily_action(self, pop, food):
         """
@@ -67,7 +89,7 @@ class Individual():
         if self.age > begin and self.age < end:  # check for age 
             if self.gender ==1 and self.status ==1 and self.days_since_repro > REPRODUCE_RECOVER:
                 # add newborn individual into population
-                self.population_list.append(Individual(0)) 
+                self.population_list.append(Individual(0, False, self.genetic_makeup)) 
                 self.days_since_repro = 0  # reset days since last reproduce 
             self.days_since_repro += 1  # increment days since last reproduce
     

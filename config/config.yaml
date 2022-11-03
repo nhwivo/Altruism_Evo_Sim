@@ -9,6 +9,7 @@
  MAX_AGE: 55  # age at which individual is removed from population 
  FERTILE_AGE_RANGE: [2, 40 ] # age range at which individuals can reproduce 
  REPRODUCE_RECOVER: 5  # number of days before individual can reproduce again 
+ ALLOTTED_GENE_NUM: 5  # number of total genes an individual can have; max = 5
  
 # Food Source Settings: 
  FOOD_UNIT: 4  # number of food unit per Food Source (1 unit = 1 individual) 
