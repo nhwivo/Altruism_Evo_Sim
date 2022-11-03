@@ -7,9 +7,11 @@ from Population import *
 
 class FoodSource(): 
     def __init__(self):
-        self.og_food_unit = config['FOOD_UNIT']  # base food unit that members reset to at end of day 
-        self.food_unit = self.og_food_unit  # food unit that changes as the day progresses 
-        self.predator_presence = False
+        self.predator_presence = False  
+        
+        # remove these features for now - might add them back later
+        # self.og_food_unit = config['FOOD_UNIT']  # base food unit that members reset to at end of day 
+        # self.food_unit = self.og_food_unit  # food unit that changes as the day progresses 
         
     def perform_daily_action(self, pop_list):
         """
@@ -34,10 +36,7 @@ class FsourceTest:
     
     def test_fs_init(self):
         """Test the __init__ function of FoodSource class."""
-        fsource = self.fsource
-        fsource_char = [fsource.og_food_unit, fsource.food_unit, fsource.predator_presence]
-        print("Output: " +str(fsource_char))
-        print("Should be: [" + str(config['FOOD_UNIT']) + ", " + str(config['FOOD_UNIT']) + ", False]")
+        pass
         
     def test_daily_action(self):
         """Test the perform_daily_action() method of FoodSource class."""

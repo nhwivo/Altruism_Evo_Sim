@@ -50,19 +50,7 @@ class Individual():
         """
         Description 
         """
-        while self.food_source == False: # search until FoodSource object with food unit is found
-            food_avail_list=list(set(self.food.pop_mem_list).difference(self.food.no_food_unit_list))
-            # pick random from list of sources with food
-            food_source = random.choice(food_avail_list)  
-            if food_source.food_unit > 0:  # random source has food:
-                self.food_source = food_source
-                food_avail = True  # break the loop 
-                
-            if food_source.food_unit <= 0:  # source does not have food:
-                # add source to list of objects without food 
-                self.food.no_food_unit_list.append(food_source)
-        
-        self.food_source.food_unit -= 1  # consume food from source
+        pass
 
     def check_predator(self):
         """

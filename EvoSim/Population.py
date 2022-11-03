@@ -1,12 +1,14 @@
 ######################################################################################################
 # DESCRIPTION
 ######################################################################################################
+
 import random
 from Individual import *
 from FoodSource import *
 from settings import *
 
-
+######################################################################################################
+# PARENT POPULATION CLASS
 class Population():
     def __init__(self, starting_popnum):
         self.starting_popnum = starting_popnum  # number of starting member in the population 
@@ -64,10 +66,7 @@ class Population():
         pass
     
     
-    
-    
-    
-    
+
 class PopulationIterator:
     """Iterator class for Population class - iterates through each member object in the population"""
     def __init__(self, population):
@@ -83,10 +82,14 @@ class PopulationIterator:
         
         # End of Iteration
         raise StopIteration
-  
+######################################################################################################
 
-        
-# child class of Population class         
+
+
+
+
+######################################################################################################        
+# CHILD CLASS OF POPULATION CLASS         
 class IndividualPopulation(Population):
     def __init__(self, starting_popnum):
         super().__init__(starting_popnum)
@@ -106,9 +109,14 @@ class IndividualPopulation(Population):
         """Make every members in the population perform specified actions."""
         for member in self.pop_mem_list:
             member.perform_daily_action(self, food)
-    
-    
-# child class of Population class             
+######################################################################################################
+
+
+
+
+
+######################################################################################################    
+# CHILD CLASS OF POPULATION CLASS             
 class FoodPopulation(Population):
     def __init__(self, starting_popnum):
         """
@@ -118,7 +126,6 @@ class FoodPopulation(Population):
             starting_popnum (int): number of individuals in the starting population.
         """
         super().__init__(starting_popnum)  # obtain attributes from parent class 
-        self.no_food_unit_list = []  # list of FoodSource objects without food unit (food unit = 0)
         
         self.initialize_population()  # create starting population of food source 
         
@@ -141,8 +148,8 @@ class FoodPopulation(Population):
     
     def reset_food_day(self, ind_popnum):
         """
-        Reset certain attributes of the food source population, such as adjusting number of food source, 
-        re-setting the food_unit attribute, and re-assigning predators. 
+        Reset certain attributes of the food source population, such as adjusting number of food source 
+        and re-assigning predators. 
         
         Parameters:
             ind_popnum (int): population number of individuals that consume food. 
@@ -150,30 +157,23 @@ class FoodPopulation(Population):
         self.ind_popnum = ind_popnum  # number of IND that needs food 
         self.edit_food_source_pop()  # make sure there is enough food for the IND population 
         self.assign_predators()  # re-assign predators - in case number of food sources increased. 
-        for food in self.pop_mem_list:
-            food.food_unit = food.og_food_unit  # reset the food unit 
-            
-        self.no_food_unit_list = []  # clear list of FoodSource objects without food unit 
-    
+                
     def edit_food_source_pop(self):
         """
         Change the population number of the food source depending on the population of individuals. 
         More individual = add food source; less individual = remove food source 
         """
-        FOOD_UNIT = config['FOOD_UNIT']
-        food_unit_avail = len(self.pop_mem_list)*FOOD_UNIT  # number of food unit currently 
+        food_unit_avail = len(self.pop_mem_list)  # number of food available currently 
         # create number of food sources needed for current ind population num plus 2 sources extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind
             needed_food_unit = self.ind_popnum - food_unit_avail  # number of food unit needed 
-            food_source_to_add = int(needed_food_unit/FOOD_UNIT)+2  # number of food source to add 
-            for _ in range(food_source_to_add):
+            for _ in range(needed_food_unit):
                 self.pop_mem_list.append(FoodSource()) 
                 
         # remove food sources if population decreased: 
         if food_unit_avail > self.ind_popnum:
             excess_food_unit_num = food_unit_avail - self.ind_popnum  # number of food unit in excess
-            num_food_source_to_remove = int(excess_food_unit_num/FOOD_UNIT)  # number of food sources to remove 
-            for member in range(num_food_source_to_remove):  # remove specified number of member from population 
+            for member in range(excess_food_unit_num):  # remove specified number of member from population 
                 self.remove_member(self.pop_mem_list[member])  
     
     def assign_predators(self):
@@ -201,33 +201,45 @@ class FoodPopulation(Population):
         """Remove predators from all sources before re-assigning predators."""
         for food_source in self.pop_mem_list:
             food_source.predator_presence = False
-            
+######################################################################################################
+
+
     
     
 
 ######################################################################################################   
 # TESTING 
-class FoodPopTest:
-    def __init__(self):
-        pass
-    
-    def test_pop_init(self):
-        pass
-    
 class IndPopTest:
     def __init__(self):
-        pass
+        self.start_popnum = 10
+        self.pop = IndividualPopulation(self.start_popnum)
     
     def test_pop_init(self):
-        pass
+        print("Number of starting population: " + str(len(self.pop.pop_mem_list))
+             + " - Should be " + str(self.start_popnum))
     
+class FoodPopTest:
+    def __init__(self):
+        self.start_popnum = 10
+        self.pop = FoodPopulation(self.start_popnum)
+    
+    def test_pop_init(self):
+        print("Number of starting population: " + str(len(self.pop.pop_mem_list))
+             + " - Should be " + str(self.start_popnum))
+        pred_pres_data = []  # predator in food population 
+        for member in self.pop.pop_mem_list:
+            pred_pres_data.append(member.predator_presence)
+        print("Predator presence data: " + str(pred_pres_data))
 
 
 if __name__ == '__main__':
     # test FoodPopulation child class
+    print("FoodPopulation Class Tests:")
     fpop_test = FoodPopTest()
     fpop_test.test_pop_init()
+    print("")
     
     # test IndividualPopulation child class
+    print("IndividualPopulation Class Tests:")
     ipop_test = IndPopTest()
     ipop_test.test_pop_init()
