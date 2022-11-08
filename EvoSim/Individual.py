@@ -22,7 +22,7 @@ class Individual():
         self.status = 1  # life status - alive=1, dead=0
         self.max_age = config['MAX_AGE']  # maximum age of the individual 
         self.days_since_repro = 0  # days since individual last reproduced 
-        self.parent_genes = parent_gene  # genetic makeup of the parent 
+        self.parent_genes = parent_gene  # self.genes dictionary of the parent
         self.genes = {}  # dictionary of genes with values that will be assigned. 
         
         
@@ -36,14 +36,9 @@ class Individual():
     def obtain_available_genes(self):
         """Retrieve the list of genes an Individual can have."""
         self.avail_gene_dict = {}  # dictionary of available genes {'g1':1, 'g2:0}
-        range_genes = config['GENE_LIST_RANGE']  # 0 in avail_gene_dict
-        bool_genes = config['GENE_LIST_BOOL']  # 1 in avail_gene_dict
         
-        for rgene in range_genes:
-            self.avail_gene_dict[rgene] = 'range'
-        
-        for bgene in bool_genes:
-            self.avail_gene_dict[bgene] = 'bool'
+        for gene in config['GENE_LIST']:
+            self.avail_gene_dict[gene] = 0
         
         self.randomize_starting_genes()  # randomize values for genes obtained above
     
@@ -56,33 +51,27 @@ class Individual():
         self.shuffle_avail_gene_dict()  # randomize the order of the available gene list
         gene_value = config['ALLOTTED_GENE_VALUE']  # number of gene "points" an individual can have 
         
-        # obtain boolean genes, assign value randomly 
-        for key in self.avail_gene_dict:
-            if self.avail_gene_dict[key] == 'bool':
-                self.genes[key] = random.randint(0,1)
-                gene_value -= self.genes[key]  # subtract "point" used from total
         
-        # obtain range genes and assign random values up to the remaining "points"
-        for key in self.avail_gene_dict:
-            if self.avail_gene_dict[key] == 'range':
-                # make sure that random value is not greater than remaining points
-                rand_val = random.randint(0,10)
-                while rand_val > gene_value:
-                    rand_val = random.randint(0,10)
-                self.genes[key] = rand_val
+        for gene in self.avail_gene_dict:
+            if gene_value > 0:
+                self.genes[gene] = random.randint(0,1)
+                gene_value -= self.genes[gene]  # subtract "point" used from total
         
     def shuffle_avail_gene_dict(self):
-        """"""
+        """Shuffle the ordered dictionary of available genes to randomize values that are assgined to them."""
         avail_g_list = list(self.avail_gene_dict.items())  # turn dict into list
         random.shuffle(avail_g_list)  # shuffle list 
         self.avail_gene_dict = dict(avail_g_list)  # convert list back into dict 
         
     def inherit_genes(self):
+        """Pass genetic information from parent to the Individual."""
         self.mutate_parent_genes()  # introduce random mutation into genome
         self.genetic_makeup = None  # assign mutated parent's gene as individual's gene 
     
     def mutate_parent_genes(self):
-        pass
+        mutation_rate = (self.parent_genes['mutation rate'])/100
+        
+        
         
         
     def perform_daily_action(self, pop, food):
@@ -162,11 +151,14 @@ class IndTest:
     
     def test_obtain_available_genes(self):
         """Test the obtain_available_genes() method."""
-        print("Items in: " + str(config['GENE_LIST_RANGE']) + " should have 'range' as values")
-        print("Items in: " + str(config['GENE_LIST_BOOL']) + " should 'bool' as values")
-        print(self.ind.avail_gene_dict)
-        print()
-        print("gene list and values after randomization: " + str(self.ind.genes))
+        ind_pop = IndividualPopulation(5)  # create individual population of 5 individuals 
+        print("Values in list below should not be greater than " + str(config['ALLOTTED_GENE_VALUE']))
+        value_list = []  # list of sum of gene points in each individual
+        for ind in ind_pop:
+            value = sum(ind.genes.values())
+            value_list.append(value)
+            
+        print("Sum of gene points in each individual: " + str(value_list))
     
     def test_daily_action(self):
         """Test perform_daily_action() method of Individual class."""
@@ -177,6 +169,6 @@ class IndTest:
             
 if __name__ == '__main__':
     ind_test = IndTest()
-    ind_test.test_ind_init()
+    # ind_test.test_ind_init()
     ind_test.test_obtain_available_genes()
     ind_test.test_daily_action()

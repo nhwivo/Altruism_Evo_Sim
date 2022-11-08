@@ -10,11 +10,10 @@
  FERTILE_AGE_RANGE: [2, 40 ] # age range at which individuals can reproduce 
  REPRODUCE_RECOVER: 5  # number of days before individual can reproduce again 
 # Individual Genetic Settings
-# number of total points an individual can have for all genes; default=21
- ALLOTTED_GENE_VALUE: 21
+# number of total points an individual can have for all genes; default=20
+ ALLOTTED_GENE_VALUE: 3
 # genes available: 
- GENE_LIST_RANGE: ["sense predator","sense food", "run away", "energy", "mutation rate"]  # genes with values in range 0-10
- GENE_LIST_BOOL: ["altruism", "altruistic marker"]  # genes with values in range 0-1
+ GENE_LIST: ["sense predator", "sense food", "run away", "extra energy", "mutation rate", "altruism", "altruistic marker"] 
  
 # Food Source Settings: 
  FOOD_UNIT: 4  # number of food unit per Food Source (1 unit = 1 individual) 
