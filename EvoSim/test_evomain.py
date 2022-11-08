@@ -22,6 +22,7 @@ RUN_NUM = config['RUN_NUM']
 SIM_MODE = config['SIM_MODE']
 OUT_FNAME = config['OUT_FNAME']
 
+
 # RUNNING THE SIMULATION 
 if __name__ == '__main__':
     My_Sim = Simulation(args.startPop, args.totalDays, RUN_NUM)  # Initialize Simulation 

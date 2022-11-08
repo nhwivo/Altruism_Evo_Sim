@@ -102,7 +102,7 @@ class IndividualPopulation(Population):
             start = config['INNIT_AGE_RANGE'][0]
             end = config['INNIT_AGE_RANGE'][1]
             age = random.randint(start, end)
-            self.individual = Individual(age, True)
+            self.individual = Individual(age, start=True)
             self.pop_mem_list.append(self.individual)
             
     def ind_population_actions(self, food):

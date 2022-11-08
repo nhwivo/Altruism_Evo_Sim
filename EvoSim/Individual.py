@@ -22,21 +22,64 @@ class Individual():
         self.status = 1  # life status - alive=1, dead=0
         self.max_age = config['MAX_AGE']  # maximum age of the individual 
         self.days_since_repro = 0  # days since individual last reproduced 
-        self.parent_genes = parent_gene
+        self.parent_genes = parent_gene  # genetic makeup of the parent 
+        self.genes = {}  # dictionary of genes with values that will be assigned. 
+        
+        
         
         if start:  # individual is from starting population:
-            self.randomize_starting_genes()
+            self.obtain_available_genes()  # retrieve list of available genes from config file
             
         if not start:  # individual not from starting population - is offspring:
             self.inherit_genes()
         
+    def obtain_available_genes(self):
+        """Retrieve the list of genes an Individual can have."""
+        self.avail_gene_dict = {}  # dictionary of available genes {'g1':1, 'g2:0}
+        range_genes = config['GENE_LIST_RANGE']  # 0 in avail_gene_dict
+        bool_genes = config['GENE_LIST_BOOL']  # 1 in avail_gene_dict
+        
+        for rgene in range_genes:
+            self.avail_gene_dict[rgene] = 'range'
+        
+        for bgene in bool_genes:
+            self.avail_gene_dict[bgene] = 'bool'
+        
+        self.randomize_starting_genes()  # randomize values for genes obtained above
+    
     def randomize_starting_genes(self):
-        self.allotted_gene_num = config['ALLOTTED_GENE_NUM']  # number of genes ind can have
-        self.genetic_makeup = None  
+        """
+        Randomize the conditions for each genes in the starting population.
+        Note: sum of assigned values are lesser than ALLOTTED_GENE_VALUE from conifig, but 
+        not guaranteed to add up to it. 
+        """
+        self.shuffle_avail_gene_dict()  # randomize the order of the available gene list
+        gene_value = config['ALLOTTED_GENE_VALUE']  # number of gene "points" an individual can have 
+        
+        # obtain boolean genes, assign value randomly 
+        for key in self.avail_gene_dict:
+            if self.avail_gene_dict[key] == 'bool':
+                self.genes[key] = random.randint(0,1)
+                gene_value -= self.genes[key]  # subtract "point" used from total
+        
+        # obtain range genes and assign random values up to the remaining "points"
+        for key in self.avail_gene_dict:
+            if self.avail_gene_dict[key] == 'range':
+                # make sure that random value is not greater than remaining points
+                rand_val = random.randint(0,10)
+                while rand_val > gene_value:
+                    rand_val = random.randint(0,10)
+                self.genes[key] = rand_val
+        
+    def shuffle_avail_gene_dict(self):
+        """"""
+        avail_g_list = list(self.avail_gene_dict.items())  # turn dict into list
+        random.shuffle(avail_g_list)  # shuffle list 
+        self.avail_gene_dict = dict(avail_g_list)  # convert list back into dict 
         
     def inherit_genes(self):
         self.mutate_parent_genes()  # introduce random mutation into genome
-        self.genetic_makeup = self.parent_genes
+        self.genetic_makeup = None  # assign mutated parent's gene as individual's gene 
     
     def mutate_parent_genes(self):
         pass
@@ -89,7 +132,7 @@ class Individual():
         if self.age > begin and self.age < end:  # check for age 
             if self.gender ==1 and self.status ==1 and self.days_since_repro > REPRODUCE_RECOVER:
                 # add newborn individual into population
-                self.population_list.append(Individual(0, False, self.genetic_makeup)) 
+                self.population_list.append(Individual(age=0, start=False, parent_gene=self.genetic_makeup)) 
                 self.days_since_repro = 0  # reset days since last reproduce 
             self.days_since_repro += 1  # increment days since last reproduce
     
@@ -107,7 +150,7 @@ class Individual():
 # TESTING 
 class IndTest:
     def __init__(self):
-        self.ind = Individual(10)  # create individual age 10
+        self.ind = Individual(10, True)  # create individual age 10
     
     def test_ind_init(self):
         """Test the __init__ function of Individual class."""
@@ -115,6 +158,15 @@ class IndTest:
         ind_char = [ind.age, ind.gender, ind.status, ind.max_age, ind.days_since_repro]
         print("Output: " +str(ind_char))
         print("Should be: [10, <random int from 0:1>, 1, " + str(config['MAX_AGE']) + ", 0]")
+        print()
+    
+    def test_obtain_available_genes(self):
+        """Test the obtain_available_genes() method."""
+        print("Items in: " + str(config['GENE_LIST_RANGE']) + " should have 'range' as values")
+        print("Items in: " + str(config['GENE_LIST_BOOL']) + " should 'bool' as values")
+        print(self.ind.avail_gene_dict)
+        print()
+        print("gene list and values after randomization: " + str(self.ind.genes))
     
     def test_daily_action(self):
         """Test perform_daily_action() method of Individual class."""
@@ -126,4 +178,5 @@ class IndTest:
 if __name__ == '__main__':
     ind_test = IndTest()
     ind_test.test_ind_init()
+    ind_test.test_obtain_available_genes()
     ind_test.test_daily_action()
