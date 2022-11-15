@@ -2,6 +2,7 @@
 # DESCRIPTION
 ######################################################################################################
 
+import copy
 import random
 from Individual import *
 from FoodSource import *
@@ -89,7 +90,7 @@ class PopulationIterator:
 
 
 ######################################################################################################        
-# CHILD CLASS OF POPULATION CLASS         
+# INDIVIDUAL POPULATION CLASS - CHILD CLASS OF POPULATION CLASS         
 class IndividualPopulation(Population):
     def __init__(self, starting_popnum):
         super().__init__(starting_popnum)
@@ -105,10 +106,46 @@ class IndividualPopulation(Population):
             self.individual = Individual(age, start=True)
             self.pop_mem_list.append(self.individual)
             
+    ####################################################################################################    
+    # ACTION OF ALL MEMBERS IN THE IND POPULATION FOR THE DAY    
     def population_actions(self, foodpop):
         """Make every members in the population perform specified actions."""
+        self.food_pop = copy.deepcopy(foodpop)  # make copy so that original list does not get altered
+        sim_mode = config["SIM_MODE"]  # obtain mode from config
+        self.reset_variables()  # reset variables used below
+        
         for member in self.pop_mem_list:
-            member.perform_daily_action(self, foodpop)
+            self.member = member
+            self.member.init_actions(self, self.food_pop)  # pass on variables needed in all modes
+            self.run_mode(sim_mode)  # run specified mode
+            self.member.determine_stat()  # remove individuals that are dead 
+            
+    def run_mode(self, sim_mode):
+        """Determine mode of the simulation and execute actions of ind accordingly."""
+        # actions executed regardeless of sim_mode:
+        self.member.determine_food()  # individual picks out food randomly
+        
+        if sim_mode == 1:
+            self.member.mode1_actions()
+            
+        if sim_mode == 2:
+            self.member.mode2_actions()
+            
+        if sim_mode == 3:
+            self.member.mode3_actions()
+            
+        if sim_mode == 4:
+            self.member.mode4_actions()
+        
+        # actions executed regardeless of sim_mode:
+        self.member.reproduce()
+        self.member.aging()
+        
+    def reset_variables(self):
+        """"""
+        pass
+        
+        
 ######################################################################################################
 
 
@@ -116,7 +153,7 @@ class IndividualPopulation(Population):
 
 
 ######################################################################################################    
-# CHILD CLASS OF POPULATION CLASS             
+# FOOD POPULATION CLASS - CHILD CLASS OF POPULATION CLASS             
 class FoodPopulation(Population):
     def __init__(self, starting_popnum):
         """
@@ -126,7 +163,6 @@ class FoodPopulation(Population):
             starting_popnum (int): number of individuals in the starting population.
         """
         super().__init__(starting_popnum)  # obtain attributes from parent class 
-        
         self.initialize_population()  # create starting population of food source 
         
     def initialize_population(self):
@@ -138,18 +174,19 @@ class FoodPopulation(Population):
         self.assign_predators()  # assign predators to random food sources 
     
     
-    
+    ####################################################################################################    
+    # ACTION OF ALL MEMBERS IN THE POPULATION FOR THE DAY    
     def population_actions(self):
-        """Make every members in the population perform specified actions."""
+        """Make every members in the population perform specified actions for the day."""
         for member in self.pop_mem_list:
             member.perform_daily_action(self)
     
     
-    
+    ####################################################################################################    
+    # RESETTING ATTRIBUTES OF ALL MEMBERS IN THE POPULATION 
     def reset_food_day(self, ind_popnum):
         """
-        Reset certain attributes of the food source population, such as adjusting number of food source 
-        and re-assigning predators. 
+        Reset certain attributes of the food source population, such as re-assigning predators. 
         
         Parameters:
             ind_popnum (int): population number of individuals that consume food. 

@@ -44,7 +44,7 @@ class Simulation():
     
     ####################################################################################################
     # RUNNING THE SIMULATION
-    def run_sim(self, sim_mode):
+    def run_sim(self):
         for _ in range(self.total_runs):
             # use the same starting population in each run 
             self.food_pop = copy.deepcopy(self.og_food_pop)  # create a duplicate population object

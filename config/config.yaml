@@ -2,7 +2,7 @@
 # Simulation Settings: 
  RUN_NUM: 2  # number of repeats/runs 
  OUT_FNAME: "_population_data.csv"  # extension for output data files
- SIM_MODE: 1  # mode of simulation to run
+ SIM_MODE: 2  # mode of simulation to run
 
 # Individual Settings:
  INNIT_AGE_RANGE: [ 10, 40 ]  # age range of individuals in the starting population
@@ -12,7 +12,7 @@
 # Individual Genetic Settings
 # number of total points an individual can have for all genes
  ALLOTTED_GENE_VALUE: 1
- MUTATION_RATE: 0.05  #rate of mutation when genes are passed on
+ MUTATION_RATE: 0.01  #rate of mutation when genes are passed on
 # genes available: 
  GENE_LIST: ["altruism", "altruistic marker"]
  GENE_LIST_EXTRA: ["sense predator", "sense food", "run away", "extra energy"]  # list of extra genes - for later in the program
@@ -22,7 +22,7 @@
  FOOD_UNIT: 4  # number of food unit per Food Source (1 unit = 1 individual) 
  INF_FOOD: True  # T: simulation has inifite food sources for individuals; F: finite food
  FOOD_SOURCE_AVAIL: 100  # number of food source, each producing FOOD_UNIT amount 
- PREDATOR_RISK: 0.02  # probability of a predator in the food source; ex: 0.02 = 1 in 50
+ PREDATOR_RISK: 0.5  # probability of a predator in the food source; ex: 0.02 = 1 in 50
 
 
 # Other format examples - REMOVE LATER: 

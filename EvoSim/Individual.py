@@ -32,7 +32,9 @@ class Individual():
             
         if not start:  # individual not from starting population - is offspring:
             self.inherit_genes()
-        
+
+    ####################################################################################################   
+    # METHODS TO DETERMINE INDIVIDUAL'S GENES
     def obtain_available_genes(self):
         """Retrieve the list of genes an Individual can have."""
         self.avail_gene_dict = {}  # dictionary of available genes {'g1':1, 'g2:0}
@@ -68,18 +70,22 @@ class Individual():
     def inherit_genes(self):
         """Pass genetic information from parent to the Individual."""
         self.mutate_parent_genes()  # introduce random mutation into genome
-        self.genetic_makeup = None  # assign mutated parent's gene as individual's gene 
+        self.genes = self.parent_genes  # assign mutated parent's gene as individual's gene 
     
     def mutate_parent_genes(self):
+        """Mutate parental genes before passing it onto the offspring."""
+        # NOTE: no mutation for now
         mutation_rate = (config['MUTATION_RATE'])/100
+    #
+    ####################################################################################################   
         
         
         
-        
-        
-    def perform_daily_action(self, pop, foodpop):
+    ####################################################################################################   
+    # DETERMINE WHICH SET OF ACTIONS TO RUN (based on SIM_MODE)
+    def init_actions(self, pop, foodpop):
         """
-        Actions that an individual perfom each day in the simulation. 
+        Initializes variables that are common in actions across all modes. 
         
         Parameters:
             pop (Population object): population that the individual is in. 
@@ -88,35 +94,14 @@ class Individual():
         self.population = pop  # Population object that this individual is in 
         self.population_list = pop.pop_mem_list  # list of Individual objects in Population object
         self.foodpop = foodpop  # Population object that contains FoodSource objects 
-        self.get_food()
-        self.reproduce()
-        self.aging()
+    ####################################################################################################   
+    # ACTIONS COMMON IN ALL MODES
+    def determine_food(self):
+        """"""
+        # determine which food to consume 
+        food_num = random.randint(0,(len(self.foodpop.pop_mem_list)-1))
+        self.food_source = self.foodpop.pop_mem_list[food_num]  # food to eat
         
-        # remove individuals that are dead from the population:
-        if self.status == 0:
-            self.population.remove_member(self)
-    
-    def get_food(self):
-        """Individual goes out to get food. If individual runs into predator, it dies."""
-        food_num = random.randint(0,(len(self.foodpop.pop_mem_list)-1)) 
-        self.food_source = self.foodpop.pop_mem_list[food_num]  # source of food being consumed 
-        self.consume_food()  # find tree with food 
-        self.check_predator()  # see if tree has predator 
-        
-        
-    def consume_food(self):
-        """
-        Description 
-        """
-        pass
-
-    def check_predator(self):
-        """
-        Description 
-        """
-        if self.food_source.predator_presence == True:
-            self.status = 0  # dies when food source has predator 
-    
     def reproduce(self):
         """Certain individuals are capable of producing more individuals."""
         begin = config['FERTILE_AGE_RANGE'][0]
@@ -128,13 +113,68 @@ class Individual():
                 self.population_list.append(Individual(age=0, start=False, parent_gene=self.genes)) 
                 self.days_since_repro = 0  # reset days since last reproduce 
             self.days_since_repro += 1  # increment days since last reproduce
-    
+            
     def aging(self):
         """All individuals age by 1 per day. If individual is older than max_age, it is removed 
         from the population."""
         self.age += 1 
         if self.age > self.max_age:
-            self.status = 0  # individual dies at max age 
+            self.status = 0  # individual dies at max age
+            
+    def check_predator(self):
+        """"""
+        if self.food_source.predator_presence == True:
+            return True
+    
+    def determine_stat(self):
+        """Remove individual from population if its status is 0."""
+        if self.status == 0:
+            self.population.remove_member(self)
+    
+    ####################################################################################################    
+    # ACTIONS FOR SIM_MODE 1
+    def mode1_actions(self):
+        self.get_food_m1()  
+        
+    def get_food_m1(self):
+        """Individual obtain food. If individual runs into predator, it dies."""
+        # check if food has predator:
+        self.check_predator_m1()  # see if tree has predator 
+
+    def check_predator_m1(self):
+        """Check if the randomly chosen food source has predator. Change status depending on presence of predator."""
+        if self.food_source.predator_presence == True:
+            self.status = 0  # dies when food source has predator 
+            
+    ####################################################################################################    
+    # ACTIONS FOR SIM_MODE 2
+    def mode2_actions(self):
+        """"""
+        self.get_food_m2()  
+    
+    def get_food_m2(self):
+        """"""
+        self.check_predator_m2()  # see if tree has predator 
+    
+    def check_predator_m2(self):
+        """"""
+        altruism_gene = self.genes['altruism']  # 1=altruistic, 0=not
+        if altruism_gene:  # if individual is altrusitic
+            # check if food has predator: 
+            if self.check_predator():
+                # make food not available for others
+                self.foodpop.remove_member(self.food_source)
+                # potentially die
+    
+    def mode3_actions(self):
+        pass
+
+    def mode4_actions(self):
+        pass    
+    
+    
+    
+     
 
 
 
