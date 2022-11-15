@@ -36,9 +36,11 @@ class Individual():
     def obtain_available_genes(self):
         """Retrieve the list of genes an Individual can have."""
         self.avail_gene_dict = {}  # dictionary of available genes {'g1':1, 'g2:0}
+        self.gene = {}
         
         for gene in config['GENE_LIST']:
             self.avail_gene_dict[gene] = 0
+            self.genes[gene] = 0 
         
         self.randomize_starting_genes()  # randomize values for genes obtained above
     
@@ -52,16 +54,16 @@ class Individual():
         gene_value = config['ALLOTTED_GENE_VALUE']  # number of gene "points" an individual can have 
         
         
-        for gene in self.avail_gene_dict:
+        for gene in self.genes:
             if gene_value > 0:
-                self.genes[gene] = random.randint(0,1)
+                self.genes[gene] = 1
                 gene_value -= self.genes[gene]  # subtract "point" used from total
         
     def shuffle_avail_gene_dict(self):
         """Shuffle the ordered dictionary of available genes to randomize values that are assgined to them."""
-        avail_g_list = list(self.avail_gene_dict.items())  # turn dict into list
+        avail_g_list = list(self.genes.items())  # turn dict into list
         random.shuffle(avail_g_list)  # shuffle list 
-        self.avail_gene_dict = dict(avail_g_list)  # convert list back into dict 
+        self.genes = dict(avail_g_list)  # convert list back into dict 
         
     def inherit_genes(self):
         """Pass genetic information from parent to the Individual."""
@@ -69,12 +71,13 @@ class Individual():
         self.genetic_makeup = None  # assign mutated parent's gene as individual's gene 
     
     def mutate_parent_genes(self):
-        mutation_rate = (self.parent_genes['mutation rate'])/100
+        mutation_rate = (config['MUTATION_RATE'])/100
         
         
         
         
-    def perform_daily_action(self, pop, food):
+        
+    def perform_daily_action(self, pop, foodpop):
         """
         Actions that an individual perfom each day in the simulation. 
         
@@ -84,8 +87,8 @@ class Individual():
         """
         self.population = pop  # Population object that this individual is in 
         self.population_list = pop.pop_mem_list  # list of Individual objects in Population object
-        self.food = food  # Population object that contains FoodSource objects 
-        # self.get_food()
+        self.foodpop = foodpop  # Population object that contains FoodSource objects 
+        self.get_food()
         self.reproduce()
         self.aging()
         
@@ -95,7 +98,8 @@ class Individual():
     
     def get_food(self):
         """Individual goes out to get food. If individual runs into predator, it dies."""
-        self.food_source = False  # source of food being consumed 
+        food_num = random.randint(0,(len(self.foodpop.pop_mem_list)-1)) 
+        self.food_source = self.foodpop.pop_mem_list[food_num]  # source of food being consumed 
         self.consume_food()  # find tree with food 
         self.check_predator()  # see if tree has predator 
         
@@ -121,7 +125,7 @@ class Individual():
         if self.age > begin and self.age < end:  # check for age 
             if self.gender ==1 and self.status ==1 and self.days_since_repro > REPRODUCE_RECOVER:
                 # add newborn individual into population
-                self.population_list.append(Individual(age=0, start=False, parent_gene=self.genetic_makeup)) 
+                self.population_list.append(Individual(age=0, start=False, parent_gene=self.genes)) 
                 self.days_since_repro = 0  # reset days since last reproduce 
             self.days_since_repro += 1  # increment days since last reproduce
     
@@ -148,9 +152,10 @@ class IndTest:
         print("Output: " +str(ind_char))
         print("Should be: [10, <random int from 0:1>, 1, " + str(config['MAX_AGE']) + ", 0]")
         print()
+        print("Genes attribute: " + str(ind.genes))
     
     def test_obtain_available_genes(self):
-        """Test the obtain_available_genes() method."""
+        """Test the obtain_available_genes() method. NOTE: test is currently not needed - might need later."""
         ind_pop = IndividualPopulation(5)  # create individual population of 5 individuals 
         print("Values in list below should not be greater than " + str(config['ALLOTTED_GENE_VALUE']))
         value_list = []  # list of sum of gene points in each individual
@@ -164,11 +169,10 @@ class IndTest:
         """Test perform_daily_action() method of Individual class."""
         ind_pop = IndividualPopulation(5)  # create individual population of 5 individuals 
         food_pop = FoodPopulation(5)  # create food population of 5 food sources
-        pass
+        self.ind.perform_daily_action(ind_pop, food_pop)
     
             
 if __name__ == '__main__':
     ind_test = IndTest()
-    # ind_test.test_ind_init()
-    ind_test.test_obtain_available_genes()
+    ind_test.test_ind_init()
     ind_test.test_daily_action()

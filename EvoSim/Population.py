@@ -105,10 +105,10 @@ class IndividualPopulation(Population):
             self.individual = Individual(age, start=True)
             self.pop_mem_list.append(self.individual)
             
-    def ind_population_actions(self, food):
+    def population_actions(self, foodpop):
         """Make every members in the population perform specified actions."""
         for member in self.pop_mem_list:
-            member.perform_daily_action(self, food)
+            member.perform_daily_action(self, foodpop)
 ######################################################################################################
 
 
@@ -139,7 +139,7 @@ class FoodPopulation(Population):
     
     
     
-    def fs_population_actions(self):
+    def population_actions(self):
         """Make every members in the population perform specified actions."""
         for member in self.pop_mem_list:
             member.perform_daily_action(self)
@@ -164,17 +164,18 @@ class FoodPopulation(Population):
         More individual = add food source; less individual = remove food source 
         """
         food_unit_avail = len(self.pop_mem_list)  # number of food available currently 
-        # create number of food sources needed for current ind population num plus 2 sources extra
+        # create number of food sources needed for current ind population num + 1 extra
         if food_unit_avail < self.ind_popnum:  # if there are less food units than ind
-            needed_food_unit = self.ind_popnum - food_unit_avail  # number of food unit needed 
+            needed_food_unit = (self.ind_popnum - food_unit_avail) + 1  # number of food unit needed 
             for _ in range(needed_food_unit):
                 self.pop_mem_list.append(FoodSource()) 
                 
         # remove food sources if population decreased: 
         if food_unit_avail > self.ind_popnum:
-            excess_food_unit_num = food_unit_avail - self.ind_popnum  # number of food unit in excess
-            for member in range(excess_food_unit_num):  # remove specified number of member from population 
-                self.remove_member(self.pop_mem_list[member])  
+            excess_food_unit_num = (food_unit_avail - self.ind_popnum) - 1  # number of food unit in excess
+            if excess_food_unit_num > 0: 
+                for member in range(excess_food_unit_num):  # remove specified number of member from population 
+                    self.remove_member(self.pop_mem_list[member])  
     
     def assign_predators(self):
         """Determine which food source has predators in them based on probability given by PREDATOR_RISK"""
@@ -185,17 +186,23 @@ class FoodPopulation(Population):
         if number_of_predators == 0:
             number_of_predators = 1  # for when num of members < 1/risk
             
-        pred_members = []  # list of food sources that have a predator
-        # loop to create random list of food sources to assign predators to 
-        while len(pred_members) < number_of_predators:
-            max_range = number_of_members - 1
-            value = random.randint(0, max_range)
-            if value not in pred_members:
-                pred_members.append(value) 
+        random.shuffle(self.pop_mem_list)  #shuffle position of food 
+        for pred in range(number_of_predators): 
+            self.pop_mem_list[pred].predator_presence = True
+        
+        random.shuffle(self.pop_mem_list)  #shuffle position of food 
+            
+#         pred_members = []  # list of food sources that have a predator
+#         # loop to create random list of food sources to assign predators to 
+#         while len(pred_members) < number_of_predators:
+#             max_range = number_of_members - 1
+#             value = random.randint(0, max_range)
+#             if value not in pred_members:
+#                 pred_members.append(value) 
                 
-        # actually assigning the predators:
-        for member in pred_members:  # for food sources with position randomly chosen above
-            self.pop_mem_list[member].predator_presence = True  # set tree to have predator
+#         # actually assigning the predators:
+#         for member in pred_members:  # for food sources with position randomly chosen above
+#             self.pop_mem_list[member].predator_presence = True  # set tree to have predator
             
     def reset_predators(self):
         """Remove predators from all sources before re-assigning predators."""

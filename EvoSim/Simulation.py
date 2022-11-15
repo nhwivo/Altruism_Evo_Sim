@@ -26,8 +26,8 @@ class Simulation():
         self.og_individual_pop = IndividualPopulation(self.start_pop)  # population of individuals 
     
     def initialize_foodpop(self):
-        foodpop_startnum = self.calculate_foodstartnum()  # calculate number of starting food sources
-        self.og_food_pop = FoodPopulation(foodpop_startnum)  # population of food sources 
+        # foodpop_startnum = self.calculate_foodstartnum()  # calculate number of starting food sources
+        self.og_food_pop = FoodPopulation((self.start_pop+3))  # population of food sources 
         
     def calculate_foodstartnum(self):
         """Calculate the number of starting food sources needed."""
@@ -70,8 +70,8 @@ class Simulation():
         self.food_pop.reset_food_day(ind_popnum)  # reset the food source population 
     
     def populations_action(self):
-        self.individual_pop.ind_population_actions(self.food_pop)  # individuals perform action
-        self.food_pop.fs_population_actions()  # food sources perform action
+        self.individual_pop.population_actions(self.food_pop)  # individuals perform action
+        self.food_pop.population_actions()  # food sources perform action
     
     
     
@@ -162,7 +162,7 @@ class Simulation():
             os.system(command)
             
     
-    ####################################################################################################
+####################################################################################################
 
     
 class SimulationMode1(Simulation):
@@ -179,7 +179,40 @@ class SimulationMode3(Simulation):
     def __init__(self):
         pass
     
-
+    
+######################################################################################################   
 # TESTING 
+class SimTest:
+    def __init__(self):
+        self.sim = Simulation(20, 30, 2)  # Initialize Simulation (20 ind, 30 days, 2 runs) 
+        # My_Sim.run_sim(1)  # run the simulation mode 1
+        # My_Sim.save_data(OUT_FNAME)
+        
+    def test_popaction(self):
+        # obtain data: 
+        self.sim.food_pop = copy.deepcopy(self.sim.og_food_pop)  # create a duplicate population object
+        self.sim.individual_pop = copy.deepcopy(self.sim.og_individual_pop)  # create a duplicate population object
+        self.report_action(True)  
+        self.sim.populations_action()
+        self.report_action(False)
+        self.sim.populations_action()
+        self.report_action(False)
+        
+    def report_action(self, before):
+        str2add = "before the day: "
+        if not before:
+            str2add = "after the day: "
+        
+        print("Number of ind " + str2add + str(len(self.sim.individual_pop.pop_mem_list)))
+        ind_stat = []  
+        for ind in self.sim.individual_pop:
+            ind_stat.append(ind.status)
+            
+        print("List of ind statuses: " + str(ind_stat))
+        print("Number of food " + str2add + str(len(self.sim.food_pop.pop_mem_list)))
+        print()
+    
+    
 if __name__ == '__main__':
-    pass
+    simtest = SimTest()  
+    simtest.test_popaction()

@@ -22,26 +22,22 @@ class FoodSource():
         """
         self.foodsource_list = pop_list  # list of all members in the population this foodsource is in 
     
-    def assign_predators(self):
-        pass
-    
-    def reset_food_unit(self):
-        pass
-    
     
 class FsourceTest:
     def __init__(self):
-        self.pop = FoodPopulation(5)  # create population of 5 food sources 
-        self.fsource = random.choice(self.pop.pop_mem_list)  # random member from population
+        self.pop = FoodPopulation(5)  # create population of 5 food sources             
     
     def test_fs_init(self):
         """Test the __init__ function of FoodSource class."""
-        pass
+        pred_presence = []  # list of predator presence attribute of each member in pop
+        for member in self.pop:
+            pred_presence.append(member.predator_presence)
+            
+        print(pred_presence)
         
     def test_daily_action(self):
         """Test the perform_daily_action() method of FoodSource class."""
-        self.fsource.perform_daily_action(self.pop)  # nothing in this method for now 
-    
+        pass
     
 # TESTING 
 if __name__ == '__main__':
