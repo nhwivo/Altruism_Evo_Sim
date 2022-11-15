@@ -94,6 +94,7 @@ class Individual():
         self.population = pop  # Population object that this individual is in 
         self.population_list = pop.pop_mem_list  # list of Individual objects in Population object
         self.foodpop = foodpop  # Population object that contains FoodSource objects 
+        
     ####################################################################################################   
     # ACTIONS COMMON IN ALL MODES
     def determine_food(self):
@@ -166,9 +167,13 @@ class Individual():
                 self.foodpop.remove_member(self.food_source)
                 # potentially die
     
+    ####################################################################################################    
+    # ACTIONS FOR SIM_MODE 3
     def mode3_actions(self):
         pass
 
+    ####################################################################################################    
+    # ACTIONS FOR SIM_MODE 4
     def mode4_actions(self):
         pass    
     

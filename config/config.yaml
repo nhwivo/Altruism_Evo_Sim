@@ -2,7 +2,7 @@
 # Simulation Settings: 
  RUN_NUM: 2  # number of repeats/runs 
  OUT_FNAME: "_population_data.csv"  # extension for output data files
- SIM_MODE: 2  # mode of simulation to run
+ SIM_MODE: 3  # mode of simulation to run
 
 # Individual Settings:
  INNIT_AGE_RANGE: [ 10, 40 ]  # age range of individuals in the starting population

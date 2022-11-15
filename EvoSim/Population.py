@@ -36,24 +36,18 @@ class Population():
         self.pop_mem_list.remove(member)
     
     def add_individual(self):
+        """"""
         pass
     
-    
-    
-    def execute_population_actions(self):
-        """
-        Make all individuals in the population perform specified actions. 
-        """
-        pass 
-    
-    
-    
+    ####################################################################################################    
+    # RECORD POPULATION DATA  
     def record_day_popnum(self):
         """Record population number for 1 day."""
         popnum = len(self.pop_mem_list)
         self.popnum_all_days.append(popnum)
     
     def record_run_popnum(self):
+        """Record population data for the run."""
         # record list of popnum for all days simulated
         self.popnum_all_runs.append(self.popnum_all_days)
         
@@ -63,6 +57,7 @@ class Population():
     def record_sim_popnum(self):
         """
         Record population number of the entire simulation (population of all days among all runs). 
+        NOTE: might not need 
         """
         pass
     

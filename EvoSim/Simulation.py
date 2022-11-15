@@ -21,6 +21,8 @@ class Simulation():
     def initialize_populations(self):
         self.initialize_indpop()  # initialize the group of individuals of interest
         self.initialize_foodpop()  # initialize population of food source
+        # exceptions to populations (based on sim_mode):
+        self.edit_mode()
         
     def initialize_indpop(self):
         self.og_individual_pop = IndividualPopulation(self.start_pop)  # population of individuals 
@@ -38,6 +40,19 @@ class Simulation():
             return fs_num  
         if not INF_FOOD:  # run when IND_FOOD = False --> food is finite 
             return FOOD_SOURCE_AVAIL  # specified value in settings.py
+        
+    def edit_mode(self):
+        """Changes to simulations based on different modes."""
+        sim_mode = config["SIM_MODE"]
+        if sim_mode == 3:
+            self.edit_m3()  # edit variables to be suitable for mode 3 of simulation
+            
+    def edit_m3(self):
+        # make all altruistic individuals have altruistic marker: 
+        for member in self.og_individual_pop:
+            if member.genes['altruism'] == 1:
+                member.genes['altruistic marker'] = 1
+        
     ####################################################################################################
     
     
