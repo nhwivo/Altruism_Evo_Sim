@@ -1,6 +1,6 @@
 ---
 # Simulation Settings: 
- RUN_NUM: 1  # number of repeats/runs 
+ RUN_NUM: 2  # number of repeats/runs 
  OUT_FNAME: "_population_data.csv"  # extension for output data files
  SIM_MODE: 1  # mode of simulation to run
 
@@ -22,7 +22,7 @@
  FOOD_UNIT: 4  # number of food unit per Food Source (1 unit = 1 individual) 
  INF_FOOD: True  # T: simulation has inifite food sources for individuals; F: finite food
  FOOD_SOURCE_AVAIL: 100  # number of food source, each producing FOOD_UNIT amount 
- PREDATOR_RISK: 0.06  # probability of a predator in the food source; ex: 0.02 = 1 in 50
+ PREDATOR_RISK: 0.02  # probability of a predator in the food source; ex: 0.02 = 1 in 50
 
 
 # Other format examples - REMOVE LATER: 
