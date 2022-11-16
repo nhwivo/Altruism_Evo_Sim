@@ -15,11 +15,12 @@ class Population():
         self.starting_popnum = starting_popnum  # number of starting member in the population 
         self.pop_mem_list = []  # list that contains each member of the population (objects)
         
-        # Simulation data: 
-        # list of population number each day for 1 run (ex: [day1_popnum, day2_popnum, day3_popnum, day4_popnum]
+        # Attributes to store population number data: 
+        # list of population number each day for 1 run (ex: [day1_popnum, day2_popnum, day3_popnum])
         self.popnum_all_days = []  
-        # list of popnum_day for every run (ex: [[day1_popnum, day2_popnum],[day1_popnum, day2_popnum]]
+        # list of popnum_day for every run (ex: [[day1_popnum, day2_popnum],[day1_popnum, day2_popnum]])
         self.popnum_all_runs = [] 
+        
     
     def __iter__(self):
         """
@@ -90,6 +91,12 @@ class IndividualPopulation(Population):
     def __init__(self, starting_popnum):
         super().__init__(starting_popnum)
         
+        # Attributes to store population allele frequency data: 
+        # list of allele freq each day for 1 run (ex: [day1_afreq, day2_afreq, day3_afreq]) 
+        self.allelefreq_alldays = []
+        # list of allele freq for every run (ex: [[day1_afreq, day2_afreq],[day1_afreq, day2_afreq]]
+        self.allelefreq_allruns = [] 
+        
         self.initialize_population()  # create starting population of individuals 
         
     def initialize_population(self):
@@ -139,6 +146,19 @@ class IndividualPopulation(Population):
     def init_var(self):
         """"""
         self.foodwpred = []  # list of food with predators
+        self.afreq_dict = {}  # dict of allele count {'altruism':2, 'altruistic marker':5}
+    #
+    ####################################################################################################    
+    # RECORD IND POPULATION DATA  
+    def record_day_allelefreq(self):
+        """Record allele frequency for 1 day."""
+        pass
+    
+    def record_run_allelefreq(self):
+        """Record allele frequency for 1 run."""
+        pass
+    
+    
         
         
 ######################################################################################################

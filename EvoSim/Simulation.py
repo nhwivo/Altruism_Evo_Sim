@@ -57,7 +57,7 @@ class Simulation():
         for member in self.og_individual_pop:
             if member.genes['altruism'] == 1:
                 member.genes['altruistic marker'] = 1
-        
+    #    
     ####################################################################################################
     
     
@@ -94,15 +94,17 @@ class Simulation():
         self.food_pop.population_actions()  # food sources perform action
     
     
-    
-    
     def record_day_data(self):
         """Record data after simulating 1 day."""
+        # Record day population data: 
         self.individual_pop.record_day_popnum()  # record population number of individuals 
         self.og_individual_pop.popnum_all_days = self.individual_pop.popnum_all_days  # copy data
         
         self.food_pop.record_day_popnum()  # record population number of food sources 
         self.og_food_pop.popnum_all_days = self.food_pop.popnum_all_days  # copy data
+        
+        # Record day allele frequency: 
+        self.individual_pop.record_day_allelefreq()  # record allele freq 
         
     
     def record_run_data(self):
@@ -110,6 +112,9 @@ class Simulation():
         # record popnum of all days in the run 
         self.og_food_pop.record_run_popnum()  
         self.og_individual_pop.record_run_popnum()  
+        
+        # record allele freq of all days in the run 
+        self.og_individual_pop.record_run_allelefreq()
     
     def record_sim_data(self):
         pass

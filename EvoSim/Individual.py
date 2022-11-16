@@ -94,7 +94,7 @@ class Individual():
         self.population = pop  # Population object that this individual is in 
         self.population_list = pop.pop_mem_list  # list of Individual objects in Population object
         self.foodpop = foodpop  # Population object that contains FoodSource objects 
-        
+    #
     ####################################################################################################   
     # ACTIONS COMMON IN ALL MODES
     def determine_food(self):
@@ -131,7 +131,7 @@ class Individual():
         """Remove individual from population if its status is 0."""
         if self.status == 0:
             self.population.remove_member(self)
-    
+    #
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 1
     def mode1_actions(self):
@@ -150,7 +150,7 @@ class Individual():
         """Check if the randomly chosen food source has predator. Change status depending on presence of predator."""
         if self.check_predator():  # yes predator
             self.status = 0  # dies when food source has predator 
-            
+    #        
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 2
     def mode2_actions(self):
@@ -175,7 +175,7 @@ class Individual():
                 # make food not available for others
                 self.foodpop.remove_member(self.food_source)
                 # potentially die
-    
+    #
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 3
     def mode3_actions(self, foodwpred):
@@ -204,7 +204,7 @@ class Individual():
                 self.foodwpred.append(self.food_source)
             # change status:
             self.status = 0  # dies 
-
+    #
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 4
     def mode4_actions(self, foodwpred):
@@ -233,9 +233,6 @@ class Individual():
             self.status = 0  # dies 
     
     
-    
-
-            
 ######################################################################################################       
 # TESTING 
 class IndTest:
