@@ -142,11 +142,18 @@ class IndividualPopulation(Population):
         # actions executed regardeless of sim_mode:
         self.member.reproduce()
         self.member.aging()
+        self.count_allele()  # record allele freq
         
     def init_var(self):
         """"""
         self.foodwpred = []  # list of food with predators
-        self.afreq_dict = {}  # dict of allele count {'altruism':2, 'altruistic marker':5}
+        # dict of allele count - count only those with 1 for allele value 
+        self.afreq_dict = {}  # ex: {'altruism':2, 'altruistic marker':5}
+        
+    def count_allele(self):
+        """Record count of each gene in gene list of Individual object."""
+        for gene in self.member.genes:  # for each gene in the ind genes dict
+            self.afreq_dict[gene] += self.member.genes[gene] 
     #
     ####################################################################################################    
     # RECORD IND POPULATION DATA  
