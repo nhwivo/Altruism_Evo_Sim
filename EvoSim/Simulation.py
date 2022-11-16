@@ -132,7 +132,11 @@ class Simulation():
         out_fname_fs = "fsource" + out_fname# output file name for food source population data 
         out_flist = [out_fname_ind, out_fname_fs]  # list of output files to be created
         
+        self.obtain_headers()  # obtain column names for data
+        
         os.system("mkdir -p sim_output")  # create direcory for output file if none exists.
+        
+        self.save_allele_freq()  # save allele freq data 
         
         for fname in out_flist:
             if "ind" in fname:
@@ -143,6 +147,22 @@ class Simulation():
             self.write_header(fname)  # create headers/columns for the output files 
             self.write_day0(fname)  # add data of the initial population
             self.write_pop_data(fname)  # add population data to output files created above: 
+    
+    def obtain_headers(self):
+        """"""
+        self.headers = ["Day"]  # initialize list
+        for run_num in range(self.total_runs):
+            col_name = "Run" + str(run_num+1)
+            self.headers.append(col_name)
+        self.headers.append("Average")
+                    
+        
+    def save_allele_freq(self):
+        afreq_file = open("sim_output/allele_freq.csv", "w")
+        # write headers
+        afreq_file.write(",".join(self.headers))  # comma delim col names
+        afreq_file.close()
+            
     
     def write_header(self, fname):
         """
