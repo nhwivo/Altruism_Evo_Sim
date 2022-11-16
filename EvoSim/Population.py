@@ -107,13 +107,13 @@ class IndividualPopulation(Population):
         """Make every members in the population perform specified actions."""
         self.food_pop = copy.deepcopy(foodpop)  # make copy so that original list does not get altered
         sim_mode = config["SIM_MODE"]  # obtain mode from config
-        self.reset_variables()  # reset variables used below
+        self.init_var()  # initializes variables 
         
         for member in self.pop_mem_list:
             self.member = member
             self.member.init_actions(self, self.food_pop)  # pass on variables needed in all modes
             self.run_mode(sim_mode)  # run specified mode
-            self.member.determine_stat()  # remove individuals that are dead 
+            self.member.determine_stat()  # remove individual if dead  
             
     def run_mode(self, sim_mode):
         """Determine mode of the simulation and execute actions of ind accordingly."""
@@ -127,18 +127,18 @@ class IndividualPopulation(Population):
             self.member.mode2_actions()
             
         if sim_mode == 3:
-            self.member.mode3_actions()
+            self.member.mode3_actions(self.foodwpred)
             
         if sim_mode == 4:
-            self.member.mode4_actions()
+            self.member.mode4_actions(self.foodwpred)
         
         # actions executed regardeless of sim_mode:
         self.member.reproduce()
         self.member.aging()
         
-    def reset_variables(self):
+    def init_var(self):
         """"""
-        pass
+        self.foodwpred = []  # list of food with predators
         
         
 ######################################################################################################

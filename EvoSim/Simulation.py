@@ -48,6 +48,11 @@ class Simulation():
             self.edit_m3()  # edit variables to be suitable for mode 3 of simulation
             
     def edit_m3(self):
+        """
+        Change genes of those with altruistic trait to match with mode of simulation.
+        NOTE: might not need this 
+            - doesnt matter what the altruistic marker is - condition is based on altrusitic gene
+        """
         # make all altruistic individuals have altruistic marker: 
         for member in self.og_individual_pop:
             if member.genes['altruism'] == 1:

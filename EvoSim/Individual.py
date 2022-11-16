@@ -82,7 +82,7 @@ class Individual():
         
         
     ####################################################################################################   
-    # DETERMINE WHICH SET OF ACTIONS TO RUN (based on SIM_MODE)
+    # VARIABLES COMMON TO ALL MODES
     def init_actions(self, pop, foodpop):
         """
         Initializes variables that are common in actions across all modes. 
@@ -135,6 +135,10 @@ class Individual():
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 1
     def mode1_actions(self):
+        """
+        Sim Mode 1: genes do not affect individual's interaction with predators. 
+            - Dies when it interacts with food that has predator in it. 
+        """
         self.get_food_m1()  
         
     def get_food_m1(self):
@@ -144,13 +148,18 @@ class Individual():
 
     def check_predator_m1(self):
         """Check if the randomly chosen food source has predator. Change status depending on presence of predator."""
-        if self.food_source.predator_presence == True:
+        if self.check_predator():  # yes predator
             self.status = 0  # dies when food source has predator 
             
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 2
     def mode2_actions(self):
-        """"""
+        """
+        Sim Mode 2: When an individual visits a tree with a predator, it has 2 options:
+            1. Gene1 allele1: runs away 
+            2. Gene1 allele2: yells/warns others of predator (increase the chance of being eaten)
+        
+        """
         self.get_food_m2()  
     
     def get_food_m2(self):
@@ -169,19 +178,62 @@ class Individual():
     
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 3
-    def mode3_actions(self):
-        pass
+    def mode3_actions(self, foodwpred):
+        """
+        Sim Mode 3: All individuals with the altruism allele has phylogenetic green beard feature
+            - Altruistic individuals will only warn those who are also altrustic (has green beard). 
+        """
+        altruism_gene = self.genes['altruism']  # 1=altruistic, 0=not
+        self.foodwpred = foodwpred  # list of food with predators 
+        
+        self.get_food_m3(altruism_gene)  # get food 
+        
+    def get_food_m3(self, altruism_gene):
+        """"""
+        # altruistic individual picks known food with predator: 
+        if altruism_gene:  # individual is altruistic 
+            if self.food_source in self.foodwpred:
+                # list of food with predators (warnings from other altruists)
+                while self.food_source in self.foodwpred:
+                    # pick another food source until one without predator is found
+                    self.determine_food()  
+        # food that has not been encountered by other altruists: 
+        if self.check_predator():  # yes predator
+            if altruism_gene:  # yes altrusitic 
+                # make food unavailable to other altruists 
+                self.foodwpred.append(self.food_source)
+            # change status:
+            self.status = 0  # dies 
 
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 4
-    def mode4_actions(self):
-        pass    
+    def mode4_actions(self, foodwpred):
+        """
+        Sim Mode 4: 
+        """
+        altruism_gene = self.genes['altruism']  # 1=altruistic, 0=not   
+        altruist_pheno = self.genes['altruistic marker']  # 1=pheno marker, 0=not 
+        self.foodwpred = foodwpred  # list of food with predators
+        
+        self.get_food_m4(altruism_gene, altruist_pheno)  # gather food 
+        
+    def get_food_m4(self, altruism_gene, altruist_pheno):
+        # individuals with phenotype that signifies altruistic individuals to help them:
+        if altruist_pheno:  
+            if self.food_source in self.foodwpred:
+                # list of food with predators (warnings from other altruists)
+                while self.food_source in self.foodwpred:
+                    # pick another food source until one without predator is found
+                    self.determine_food()  
+        if self.check_predator():  # yes predator 
+            if altruism_gene:  # altruistic individual 
+                # make food unavailable to other altruists & those with pheno marker
+                self.foodwpred.append(self.food_source)
+            # change individual status 
+            self.status = 0  # dies 
     
     
     
-     
-
-
 
             
 ######################################################################################################       
