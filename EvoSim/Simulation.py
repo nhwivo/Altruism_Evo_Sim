@@ -90,6 +90,7 @@ class Simulation():
         self.food_pop.reset_food_day(ind_popnum)  # reset the food source population 
     
     def populations_action(self):
+        """Execute actions of members within each population"""
         self.individual_pop.population_actions(self.food_pop)  # individuals perform action
         self.food_pop.population_actions()  # food sources perform action
     
@@ -105,6 +106,8 @@ class Simulation():
         
         # Record day allele frequency: 
         self.individual_pop.record_day_allelefreq()  # record allele freq 
+        # copy data (individual_pop resets) 
+        self.og_individual_pop.allelefreq_alldays = self.individual_pop.allelefreq_alldays
         
     
     def record_run_data(self):
