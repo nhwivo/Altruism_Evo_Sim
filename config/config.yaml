@@ -2,13 +2,13 @@
 # Simulation Settings: 
  RUN_NUM: 2  # number of repeats/runs 
  OUT_FNAME: "_population_data.csv"  # extension for output data files
- SIM_MODE: 4  # mode of simulation to run
+ SIM_MODE: 0  # mode of simulation to run
 
 # Individual Settings:
  INNIT_AGE_RANGE: [ 10, 40 ]  # age range of individuals in the starting population
  MAX_AGE: 55  # age at which individual is removed from population 
- FERTILE_AGE_RANGE: [2, 40 ] # age range at which individuals can reproduce 
- REPRODUCE_RECOVER: 5  # number of days before individual can reproduce again 
+ FERTILE_AGE_RANGE: [10, 45 ] # age range at which individuals can reproduce 
+ REPRODUCE_RECOVER: 10  # number of days before individual can reproduce again 
 # Individual Genetic Settings
 # number of total points an individual can have for all genes
  ALLOTTED_GENE_VALUE: 1

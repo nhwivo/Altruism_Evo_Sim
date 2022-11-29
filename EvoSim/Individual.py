@@ -104,7 +104,24 @@ class Individual():
         self.food_source = self.foodpop.pop_mem_list[food_num]  # food to eat
         
     def reproduce(self):
-        """Certain individuals are capable of producing more individuals."""
+        """
+        Individuals who meet the following criteria reproduce (inf food):
+            - Within certain age range 
+            - Certain time since after previous reproduction 
+        NOTE: combine this with female_rep function below so that elements arent repeated 
+        """
+        begin = config['FERTILE_AGE_RANGE'][0]
+        end = config['FERTILE_AGE_RANGE'][1]
+        REPRODUCE_RECOVER = config['REPRODUCE_RECOVER']
+        if self.age > begin and self.age < end:  # check for age
+            if self.status == 1 and self.days_since_repro > REPRODUCE_RECOVER:
+                # add newborn individual into population
+                self.population_list.append(Individual(age=0, start=False, parent_gene=self.genes)) 
+                self.days_since_repro = 0  # reset days since last reproduce
+            self.days_since_repro += 1  # increment days since last reproduce
+    
+    def female_reproduce(self):
+        """Certain female individuals are capable of producing more individuals."""
         begin = config['FERTILE_AGE_RANGE'][0]
         end = config['FERTILE_AGE_RANGE'][1]
         REPRODUCE_RECOVER = config['REPRODUCE_RECOVER']
@@ -132,12 +149,22 @@ class Individual():
         if self.status == 0:
             self.population.remove_member(self)
     #
+    ####################################################################################################
+    # ACTIONS FOR SIM_MODE 0
+    def mode0_actions(self):
+        """
+        Sim Mode 0: no predators. Inifinite food. 
+            - death: old age 
+        """
+        pass  # aging done in action common to all modes
+        
+    #
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 1
     def mode1_actions(self):
         """
         Sim Mode 1: genes do not affect individual's interaction with predators. 
-            - Dies when it interacts with food that has predator in it. 
+            - death: old age; interaction with food that has predator. 
         """
         self.get_food_m1()  
         

@@ -61,6 +61,20 @@ class Population():
         NOTE: might not need 
         """
         pass
+    ####################################################################################################    
+    # POPULATION DATA CALCULATIONS
+    def cal_pop_growth(self):
+        """Calculate population growth."""
+        self.pop_growth_allruns = [] # list of list of population growth 
+        for run in self.popnum_all_runs:  # list of list of popnum 
+            # reset list: 
+            self.pop_growth = []  # list of population growth over days for a run 
+            for day in range(len(run)): # for each day
+                # calculate population growth
+                pass
+    #
+    ####################################################################################################    
+
     
     
 
@@ -133,6 +147,9 @@ class IndividualPopulation(Population):
         # actions executed regardeless of sim_mode:
         self.member.determine_food()  # individual picks out food randomly
         
+        if sim_mode == 0:
+            self.member.mode0_actions()
+            
         if sim_mode == 1:
             self.member.mode1_actions()
             
