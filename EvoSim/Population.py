@@ -64,14 +64,24 @@ class Population():
     ####################################################################################################    
     # POPULATION DATA CALCULATIONS
     def cal_pop_growth(self):
-        """Calculate population growth."""
+        """
+        Calculate population growth
+            - Growth = 1: stable population, no growth 
+            - Growth < 1: population decline 
+            - Growth > 1: population increase 
+        """
         self.pop_growth_allruns = [] # list of list of population growth 
-        for run in self.popnum_all_runs:  # list of list of popnum 
+        for run in self.popnum_all_runs:  # cycle through each list of popnum/run 
             # reset list: 
-            self.pop_growth = []  # list of population growth over days for a run 
+            self.pop_growth = []  # list of population growth over days for 1 run 
+            prev_pop_num = run[0]  # obtain starting population 
             for day in range(len(run)): # for each day
+                current_pnum = run[day]  # current population number 
                 # calculate population growth
-                pass
+                growth = current_pnum/prev_pop_num
+                prev_pop_num = current_pnum  
+                self.pop_growth.append(growth)  # add calculated growth to list
+            self.pop_growth_allruns.append(self.pop_growth)
     #
     ####################################################################################################    
 

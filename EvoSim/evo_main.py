@@ -24,4 +24,4 @@ OUT_FNAME = config['OUT_FNAME']
 if __name__ == '__main__':
     My_Sim = Simulation(args.startPop, args.totalDays, args.repeatNum)  # Initialize Simulation 
     My_Sim.run_sim()  # run the simulation 
-    My_Sim.save_data(OUT_FNAME)
+    My_Sim.save_data()

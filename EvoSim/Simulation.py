@@ -128,7 +128,8 @@ class Simulation():
         self.og_individual_pop.record_run_allelefreq()
     
     def record_sim_data(self):
-        pass
+        """"""
+        self.og_individual_pop.cal_pop_growth()  # calculate population growth 
     #
     ####################################################################################################
 
@@ -136,12 +137,17 @@ class Simulation():
     
     ####################################################################################################
     # SIMULATION COMPLETE - SAVE DATA INTO A FILE 
-    def save_data(self, out_fname):
+    def save_data(self):
+        OUT_FNAME = config['OUT_FNAME']
+        self.save_popnum_data(OUT_FNAME)  # save data of population number
+        self.save_growthr_data()  # save data of growth rate 
+    
+    def save_popnum_data(self, out_fname):
         out_fname_ind = "ind" + out_fname  # output file name for individual population data 
         out_fname_fs = "fsource" + out_fname# output file name for food source population data 
         out_flist = [out_fname_ind, out_fname_fs]  # list of output files to be created
         
-        self.obtain_headers()  # obtain column names for data
+        self.obtain_colnames()  # obtain column names for data
         
         os.system("mkdir -p sim_output")  # create direcory for output file if none exists.
         
@@ -153,17 +159,23 @@ class Simulation():
             if "fsource" in fname:
                 self.pop_to_save = self.og_food_pop
                 
-            self.write_header(fname)  # create headers/columns for the output files 
+            self.write_colnames(fname)  # create headers/columns for the output files 
             # self.write_day0(fname)  # add data of the initial population
             self.write_pop_data(fname)  # add population data to output files created above: 
     
-    def obtain_headers(self):
+    def obtain_colnames(self):
         """"""
         self.headers = ["Day"]  # initialize list
         for run_num in range(self.total_runs):
             col_name = "Run" + str(run_num+1)
             self.headers.append(col_name)
         self.headers.append("Average")
+        self.headers = ','.join(self.headers)
+        
+    def write_colnames(self, fname):
+        """Write headers into a specified file."""
+        command = "echo " + self.headers + " > sim_output/" + fname
+        os.system(command)  # run the command to create file and add column names
                     
         
     def save_allele_freq(self):
@@ -173,7 +185,7 @@ class Simulation():
         afreq_file.close()
             
     
-    def write_header(self, fname):
+    def write_popnum_header(self, fname):
         """
         Write the header/columns of the file.
         
@@ -219,6 +231,12 @@ class Simulation():
             day_avg = day_avg/self.total_runs  # calculate average for each day 
             command = "echo " + data_string + str(day_avg) + " >> sim_output/" + fname
             os.system(command)
+            
+    def save_growthr_data(self):
+        """"""
+        self.obtain_colnames()  
+        self.write_colnames("ind_growth_rate.csv")
+        
             
     
 ####################################################################################################
