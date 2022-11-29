@@ -78,7 +78,10 @@ class Population():
             for day in range(len(run)): # for each day
                 current_pnum = run[day]  # current population number 
                 # calculate population growth
-                growth = current_pnum/prev_pop_num
+                if prev_pop_num <= 0:  # division with 0  
+                    growth = 0
+                else: 
+                    growth = (current_pnum/prev_pop_num)
                 prev_pop_num = current_pnum  
                 self.pop_growth.append(growth)  # add calculated growth to list
             self.pop_growth_allruns.append(self.pop_growth)
