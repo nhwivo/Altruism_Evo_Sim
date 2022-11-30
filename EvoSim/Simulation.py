@@ -10,7 +10,7 @@ from settings import *
 
 class Simulation():
     ####################################################################################################
-    # INITIALIZING SIMULATION  
+    # INITIALIZE SIMULATION  
     def __init__(self, start_pop, total_days, total_runs):
         self.start_pop = int(start_pop)
         self.total_days = int(total_days)
@@ -63,7 +63,7 @@ class Simulation():
     
     
     ####################################################################################################
-    # RUNNING THE SIMULATION
+    # RUN THE SIMULATION
     def run_sim(self):
         for _ in range(self.total_runs):
             # use the same starting population in each run 
@@ -101,6 +101,7 @@ class Simulation():
     def record_init_pop_data(self):
         """Record starting population number."""
         self.individual_pop.record_day_popnum()
+        self.individual_pop.record_day_allelefreq()
         self.food_pop.record_day_popnum()
     
     def record_day_data(self):
@@ -114,7 +115,7 @@ class Simulation():
         
         # Record day allele frequency: 
         self.individual_pop.record_day_allelefreq()  # record allele freq 
-        # copy data (individual_pop resets) 
+        # copy data (because individual_pop resets) 
         self.og_individual_pop.allelefreq_alldays = self.individual_pop.allelefreq_alldays
         
     
@@ -142,6 +143,7 @@ class Simulation():
         self.obtain_colnames()  # obtain column names 
         self.save_popnum_data(OUT_FNAME)  # save data of population number
         self.save_growthr_data()  # save data of growth rate 
+        # self.save_allele_freq()
     
     def save_popnum_data(self, out_fname):
         out_fname_ind = "ind" + out_fname  # output file name for individual population data 
@@ -167,6 +169,12 @@ class Simulation():
         self.data_to_save = self.og_individual_pop.pop_growth_allruns
         self.write_colnames("ind_growth_rate.csv")
         self.write_data("ind_growth_rate.csv")
+    
+    def save_allele_freq(self):
+        self.data_to_save = self.og_individual_pop.allelefreq_allruns
+        self.write_colnames("allele_freq.csv")
+        self.write_data("allele_freq.csv")
+        
         
     def obtain_colnames(self):
         """Obtain column names/headers for the file"""
@@ -195,13 +203,6 @@ class Simulation():
             day_avg = day_avg/self.total_runs  # calculate average for each day 
             command = "echo " + data_string + str(day_avg) + " >> sim_output/" + fname
             os.system(command)
-                    
-        
-    def save_allele_freq(self):
-        afreq_file = open("sim_output/allele_freq.csv", "w")
-        # write headers
-        afreq_file.write(",".join(self.headers))  # comma delim col names
-        afreq_file.close()
             
     
 ####################################################################################################

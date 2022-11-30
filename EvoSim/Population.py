@@ -112,11 +112,22 @@ class PopulationIterator:
 
 
 
+
+
+
+
+
+
+
+
+
+
 ######################################################################################################        
 # INDIVIDUAL POPULATION CLASS - CHILD CLASS OF POPULATION CLASS         
 class IndividualPopulation(Population):
     def __init__(self, starting_popnum):
         super().__init__(starting_popnum)
+        self.sim_mode = config["SIM_MODE"]  # obtain mode from config
         
         # Attributes to store population allele frequency data: 
         # list of allele freq each day for 1 run (ex: [day1_afreq, day2_afreq, day3_afreq]) 
@@ -135,10 +146,29 @@ class IndividualPopulation(Population):
             self.individual = Individual(age, start=True)
             self.pop_mem_list.append(self.individual)
         
-        # dict to keep count of allele freq - count only those with 1 for allele value 
+        # initialize dict to keep count of allele freq - count only those with 1 for allele value 
         self.afreq_dict = {'total':0}  # ex: {'altruism':2, 'altruistic marker':5}
         for gene in self.pop_mem_list[0].genes:
             self.afreq_dict[gene] = 0 
+            
+        # record initial allele freq
+        for member in self.pop_mem_list:
+            self.member = member
+            self.count_allele()
+        
+        if self.sim_mode == 4: 
+            self.init_m4()
+            
+    def init_m4(self):
+        # dict of number of number of individual of each phenotype 
+        four_pheno_count = {"AB":0,"Ab":0,"aB":0,"ab":0}   
+        for member in self.popmemlist:
+            self.member = member
+            self.determine_pheno_m4()
+            
+    def determine_pheno_m4(self):
+        
+    
             
             
     ####################################################################################################    
@@ -146,33 +176,33 @@ class IndividualPopulation(Population):
     def population_actions(self, foodpop):
         """Make every members in the population perform specified actions."""
         self.food_pop = copy.deepcopy(foodpop)  # make copy so that original list does not get altered
-        sim_mode = config["SIM_MODE"]  # obtain mode from config
         self.init_var()  # initializes variables 
         
         for member in self.pop_mem_list:
             self.member = member
             self.member.init_actions(self, self.food_pop)  # pass on variables needed in all modes
-            self.run_mode(sim_mode)  # run specified mode
+            self.run_mode()  # run specified mode
             self.member.determine_stat()  # remove individual if dead  
             
-    def run_mode(self, sim_mode):
+    def run_mode(self):
         """Determine mode of the simulation and execute actions of ind accordingly."""
         # actions executed regardeless of sim_mode:
         self.member.determine_food()  # individual picks out food randomly
+        mode = self.sim_mode 
         
-        if sim_mode == 0:
+        if mode == 0:
             self.member.mode0_actions()
             
-        if sim_mode == 1:
+        if mode == 1:
             self.member.mode1_actions()
             
-        if sim_mode == 2:
+        if mode == 2:
             self.member.mode2_actions()
             
-        if sim_mode == 3:
+        if mode == 3:
             self.member.mode3_actions(self.foodwpred)
             
-        if sim_mode == 4:
+        if mode == 4:
             self.member.mode4_actions(self.foodwpred)
         
         # actions executed regardeless of sim_mode:
@@ -193,10 +223,40 @@ class IndividualPopulation(Population):
         self.afreq_dict['total'] += 1
     #
     ####################################################################################################    
-    # RECORD IND POPULATION DATA  
+    # RECORD ALLLE FREQUENCY POPULATION DATA  
     def record_day_allelefreq(self):
         """Record allele frequency for 1 day."""
-        self.allelefreq_alldays.append(self.afreq_dict)
+        mode = self.sim_mode  # obtain mode
+        if mode == 2 or mode == 3: 
+            self.record_day_allelefreq_alt()
+            
+        if mode == 4: 
+            self.record_day_4phenotypes()
+            
+            
+        self.allelefreq_alldays.append(self.day_allelefreq)
+    
+    def record_day_allelefreq_alt(self):
+        """Only record 'altruism' gene. day_allelefreq variable reports proportion of population with alt gene."""
+        altruism_num = self.afreq_dict['altruism']  # number of individuals with gene 
+        total_num = self.afreq_dict['total']  # total number of individuals 
+        if altruism_num:  # not 0 
+            self.day_allelefreq = altruism_num/total_num
+            
+        else:  # 0 altruisctic ind (indivisible by 0) 
+            self.day_allelefreq = 0
+            
+    def record_day_4phenotypes(self):
+        """
+        Record the 4 different possible phenotypes in mode 4.
+            - AB: altruistic and has beard 
+            - Ab: altruistic and no beard 
+            - aB: not altruistic and has beard 
+            - ab: not altruistic and no beard  
+        """
+        self.determine_pheno()  # determine phenotype of each ind.
+    
+    
     
     def record_run_allelefreq(self):
         """Record allele frequency for 1 run."""
@@ -205,11 +265,24 @@ class IndividualPopulation(Population):
         
         # clear list to record popnum for next run
         self.allelefreq_alldays = []
+        
+    def record_breeding_pop(self):
+        """Record proportion/fraction of breeding population."""
+        pass
     
     
         
         
 ######################################################################################################
+
+
+
+
+
+
+
+
+
 
 
 
@@ -313,6 +386,16 @@ class FoodPopulation(Population):
 
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 ######################################################################################################   
 # TESTING 
@@ -320,10 +403,22 @@ class IndPopTest:
     def __init__(self):
         self.start_popnum = 10
         self.pop = IndividualPopulation(self.start_popnum)
+        self.foodpop = FoodPopulation(self.start_popnum)
     
     def test_pop_init(self):
         print("Number of starting population: " + str(len(self.pop.pop_mem_list))
              + " - Should be " + str(self.start_popnum))
+        
+    def test_record_allelefreq(self):
+        # perform population action - to obtain afreq data 
+        self.pop.population_actions(self.foodpop)  
+        print("allele freq data end of 1 day: ")
+        print(self.pop.afreq_dict)
+        
+        # calculate data
+        self.pop.record_day_allelefreq()
+        print()
+        print(self.pop.allelefreq_alldays)
     
 class FoodPopTest:
     def __init__(self):
@@ -340,13 +435,16 @@ class FoodPopTest:
 
 
 if __name__ == '__main__':
+    # test IndividualPopulation child class
+    print("IndividualPopulation Class Tests:")
+    ipop_test = IndPopTest()
+    ipop_test.test_record_allelefreq()
+    print("")
+
+    
     # test FoodPopulation child class
     print("FoodPopulation Class Tests:")
     fpop_test = FoodPopTest()
     fpop_test.test_pop_init()
-    print("")
     
-    # test IndividualPopulation child class
-    print("IndividualPopulation Class Tests:")
-    ipop_test = IndPopTest()
-    ipop_test.test_pop_init()
+    

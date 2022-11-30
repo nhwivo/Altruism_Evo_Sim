@@ -1,8 +1,8 @@
 ---
 # Simulation Settings: 
- RUN_NUM: 2  # number of repeats/runs 
+ RUN_NUM: 0  # number of repeats/runs 
  OUT_FNAME: "_population_data.csv"  # extension for output data files
- SIM_MODE: 3  # mode of simulation to run
+ SIM_MODE: 2  # mode of simulation to run
 
 # Individual Settings:
  INNIT_AGE_RANGE: [ 10, 40 ]  # age range of individuals in the starting population
@@ -22,7 +22,7 @@
  FOOD_UNIT: 4  # number of food unit per Food Source (1 unit = 1 individual) 
  INF_FOOD: True  # T: simulation has inifite food sources for individuals; F: finite food
  FOOD_SOURCE_AVAIL: 100  # number of food source, each producing FOOD_UNIT amount 
- PREDATOR_RISK: 0.09  # probability of a predator in the food source; ex: 0.02 = 1 in 50
+ PREDATOR_RISK: 0.1  # probability of a predator in the food source; ex: 0.02 = 1 in 50
 
 
 # Other format examples - REMOVE LATER: 

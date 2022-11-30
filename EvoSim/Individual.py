@@ -17,6 +17,7 @@ class Individual():
                 would be randomized; compared to F if the individual is an offspring - genes
                 would be inherited from parents.
         """
+        # ATTRIBUTES:
         self.age = age
         self.gender = random.randint(0,1)  # random gender - male=0, female=1
         self.status = 1  # life status - alive=1, dead=0
@@ -26,7 +27,7 @@ class Individual():
         self.genes = {}  # dictionary of genes with values that will be assigned. 
         
         
-        
+        # CREATE INDIVIDUAL: 
         if start:  # individual is from starting population:
             self.obtain_available_genes()  # retrieve list of available genes from config file
             
@@ -34,14 +35,13 @@ class Individual():
             self.inherit_genes()
 
     ####################################################################################################   
-    # METHODS TO DETERMINE INDIVIDUAL'S GENES
+    # CREATE IND: DETERMINE INDIVIDUAL'S GENES
     def obtain_available_genes(self):
         """Retrieve the list of genes an Individual can have."""
-        self.avail_gene_dict = {}  # dictionary of available genes {'g1':1, 'g2:0}
+        # dictionary of available genes {'g1':1, 'g2:0} - 1: has gene, 0: does not have gene
         self.gene = {}
         
         for gene in config['GENE_LIST']:
-            self.avail_gene_dict[gene] = 0
             self.genes[gene] = 0 
         
         self.randomize_starting_genes()  # randomize values for genes obtained above
@@ -49,12 +49,11 @@ class Individual():
     def randomize_starting_genes(self):
         """
         Randomize the conditions for each genes in the starting population.
-        Note: sum of assigned values are lesser than ALLOTTED_GENE_VALUE from conifig, but 
+        Note: sum of assigned values are lesser than ALLOTTED_GENE_VALUE from config, but 
         not guaranteed to add up to it. 
         """
         self.shuffle_avail_gene_dict()  # randomize the order of the available gene list
         gene_value = config['ALLOTTED_GENE_VALUE']  # number of gene "points" an individual can have 
-        
         
         for gene in self.genes:
             if gene_value > 0:
@@ -184,7 +183,7 @@ class Individual():
         """
         Sim Mode 2: When an individual visits a tree with a predator, it has 2 options:
             1. Gene1 allele1: runs away 
-            2. Gene1 allele2: yells/warns others of predator (increase the chance of being eaten)
+            2. Gene1 allele2: warns others of predator and gets eaten 
         
         """
         self.get_food_m2()  
@@ -201,13 +200,15 @@ class Individual():
             if self.check_predator():
                 # make food not available for others
                 self.foodpop.remove_member(self.food_source)
-                # potentially die
+                # die 
+                self.status = 0 
+                
     #
     ####################################################################################################    
     # ACTIONS FOR SIM_MODE 3
     def mode3_actions(self, foodwpred):
         """
-        Sim Mode 3: All individuals with the altruism allele has phylogenetic green beard feature
+        Sim Mode 3: All individuals with the altruism allele also has phylogenetic green beard feature
             - Altruistic individuals will only warn those who are also altrustic (has green beard). 
         """
         altruism_gene = self.genes['altruism']  # 1=altruistic, 0=not
@@ -236,7 +237,13 @@ class Individual():
     # ACTIONS FOR SIM_MODE 4
     def mode4_actions(self, foodwpred):
         """
-        Sim Mode 4: 
+        Sim Mode 4: 4 different phenotypes. altruism: A, no alt: a, beard: B, no beard: b
+            - AB: altruistic and has beard 
+            - Ab: altruistic and no beard 
+                - does not get help from others 
+            - aB: not altruistic and has beard 
+                - gets help from others but does not help others 
+            - ab: not altruistic and no beard  
         """
         altruism_gene = self.genes['altruism']  # 1=altruistic, 0=not   
         altruist_pheno = self.genes['altruistic marker']  # 1=pheno marker, 0=not 
@@ -254,7 +261,7 @@ class Individual():
                     self.determine_food()  
         if self.check_predator():  # yes predator 
             if altruism_gene:  # altruistic individual 
-                # make food unavailable to other altruists & those with pheno marker
+                # make food unavailable to those with pheno marker
                 self.foodwpred.append(self.food_source)
             # change individual status 
             self.status = 0  # dies 
@@ -291,6 +298,7 @@ class IndTest:
         ind_pop = IndividualPopulation(5)  # create individual population of 5 individuals 
         food_pop = FoodPopulation(5)  # create food population of 5 food sources
         self.ind.perform_daily_action(ind_pop, food_pop)
+        
     
             
 if __name__ == '__main__':
