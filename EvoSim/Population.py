@@ -161,13 +161,37 @@ class IndividualPopulation(Population):
             
     def init_m4(self):
         # dict of number of number of individual of each phenotype 
-        four_pheno_count = {"AB":0,"Ab":0,"aB":0,"ab":0}   
+        self.four_pheno_count = {"AB":0,"Ab":0,"aB":0,"ab":0}   
         for member in self.popmemlist:
             self.member = member
-            self.determine_pheno_m4()
+            pheno = self.determine_pheno_m4()
+            self.four_pheno_count[pheno] += 1
+            
             
     def determine_pheno_m4(self):
-        
+        """
+        Returns: a string indicating the following 
+            - AB: altruistic and has beard 
+            - Ab: altruistic and no beard 
+            - aB: not altruistic and has beard 
+            - ab: not altruistic and no beard  
+        """
+        gene = self.member.genes  
+        if gene['altruism']:  # is altruistic 
+            if gene['altruistic marker']:  # has marker 
+                # altruistic + has beard = AB
+                return 'AB'
+            else:
+                # altruistic + no beard = Ab
+                return 'Ab'
+        elif:  # not altruistic 
+            if gene['altruistic marker']:  # has marker
+                # not altruistic + has beard = aB
+                return 'aB'
+            else:
+                # not altruistic + no beard = ab 
+                return 'ab'
+            
     
             
             
@@ -254,8 +278,7 @@ class IndividualPopulation(Population):
             - aB: not altruistic and has beard 
             - ab: not altruistic and no beard  
         """
-        self.determine_pheno()  # determine phenotype of each ind.
-    
+        pass
     
     
     def record_run_allelefreq(self):
@@ -419,6 +442,9 @@ class IndPopTest:
         self.pop.record_day_allelefreq()
         print()
         print(self.pop.allelefreq_alldays)
+        
+    def test_four_pheno_count(self):
+        print(self.pop.four_pheno_count)
     
 class FoodPopTest:
     def __init__(self):
@@ -439,6 +465,7 @@ if __name__ == '__main__':
     print("IndividualPopulation Class Tests:")
     ipop_test = IndPopTest()
     ipop_test.test_record_allelefreq()
+    ipop_test.test_four_pheno_count() 
     print("")
 
     
